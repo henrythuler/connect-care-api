@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.models.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
@@ -15,18 +16,18 @@ public class Medico extends Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
     private String crm;
-    private String valorDaConsulta;
-    private char presencial;
+    private BigDecimal valorDaConsulta;
+    private boolean presencial;
+    private boolean teleconsulta;
     
-	public Medico() {
-		super();
-	}
+	public Medico() {}
 
-	public Medico(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String crm, String valorDaConsulta, char presencial) {
+	public Medico(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String crm, BigDecimal valorDaConsulta, boolean presencial, boolean teleconsulta) {
 		super(id, nome, dataNascimento, genero, endereco, telefone);
         this.crm = crm;
         this.valorDaConsulta = valorDaConsulta;
         this.presencial = presencial;
+        this.teleconsulta = teleconsulta;
 	}
 
 	public String getCrm() {
@@ -38,20 +39,28 @@ public class Medico extends Pessoa implements Serializable {
 	}
 	
 
-	public String getValorDaConsulta() {
+	public BigDecimal getValorDaConsulta() {
 		return valorDaConsulta;
 	}
 
-	public void setValorDaConsulta(String valorDaConsulta) {
+	public void setValorDaConsulta(BigDecimal valorDaConsulta) {
 		this.valorDaConsulta = valorDaConsulta;
 	}
 
-	public char getPresencial() {
+	public boolean getPresencial() {
 		return presencial;
 	}
 
-	public void setPresencial(char presencial) {
+	public void setPresencial(boolean presencial) {
 		this.presencial = presencial;
+	}
+	
+	public boolean getTeleconsulta() {
+		return teleconsulta;
+	}
+
+	public void setTeleconsulta(boolean teleconsulta) {
+		this.teleconsulta = teleconsulta;
 	}
 
 	@Override
@@ -59,7 +68,8 @@ public class Medico extends Pessoa implements Serializable {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((crm == null) ? 0 : crm.hashCode());
-		result = prime * result + presencial;
+		result = prime * result + (presencial ? 1231 : 1237);
+		result = prime * result + (teleconsulta ? 1231 : 1237);
 		result = prime * result + ((valorDaConsulta == null) ? 0 : valorDaConsulta.hashCode());
 		return result;
 	}
@@ -79,6 +89,8 @@ public class Medico extends Pessoa implements Serializable {
 		} else if (!crm.equals(other.crm))
 			return false;
 		if (presencial != other.presencial)
+			return false;
+		if (teleconsulta != other.teleconsulta)
 			return false;
 		if (valorDaConsulta == null) {
 			if (other.valorDaConsulta != null)

@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

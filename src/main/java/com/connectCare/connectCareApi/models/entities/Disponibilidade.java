@@ -22,7 +22,7 @@ public class Disponibilidade {
     private boolean agendado;
     
     @ManyToOne
-    @JoinColumn(name="medico_id")
+    @JoinColumn(name="id_medico")
     private Medico medico;
 
 	public Disponibilidade() {}

@@ -6,8 +6,10 @@ import java.util.Date;
 
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,14 +23,24 @@ public class Medico extends Pessoa implements Serializable {
     private boolean presencial;
     private boolean teleconsulta;
     
+    @OneToOne
+    @JoinColumn(name="id_usuario")
+    private Usuario usuario;
+    
+    @ManyToOne
+    @JoinColumn(name="id_especialidade")
+    private Especialidade especialidade;
+    
 	public Medico() {}
 
-	public Medico(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String crm, BigDecimal valorDaConsulta, boolean presencial, boolean teleconsulta) {
+	public Medico(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String crm, BigDecimal valorDaConsulta, boolean presencial, boolean teleconsulta, Usuario usuario, Especialidade especialidade) {
 		super(id, nome, dataNascimento, genero, endereco, telefone);
         this.crm = crm;
         this.valorDaConsulta = valorDaConsulta;
         this.presencial = presencial;
         this.teleconsulta = teleconsulta;
+        this.usuario = usuario;
+        this.especialidade = especialidade;
 	}
 
 	public String getCrm() {
@@ -62,6 +74,22 @@ public class Medico extends Pessoa implements Serializable {
 
 	public void setTeleconsulta(boolean teleconsulta) {
 		this.teleconsulta = teleconsulta;
+	}
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	
+	public Especialidade getEspecialidade() {
+		return especialidade;
+	}
+
+	public void setEspecialidade(Especialidade especialidade) {
+		this.especialidade = especialidade;
 	}
 
 	@Override

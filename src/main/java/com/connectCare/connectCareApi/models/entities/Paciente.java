@@ -2,6 +2,8 @@ package com.connectCare.connectCareApi.models.entities;
 
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 import java.util.Date;
 
@@ -9,12 +11,17 @@ import java.util.Date;
 public class Paciente extends Pessoa {
 
     private String cpf; //11 Dígitos - Sem pontuação
+    
+    @OneToOne
+    @JoinColumn(name="id_usuario")
+    private Usuario usuario;
 
     public Paciente(){}
 
-    public Paciente(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String cpf) {
+    public Paciente(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String cpf, Usuario usuario) {
         super(id, nome, dataNascimento, genero, endereco, telefone);
         this.cpf = cpf;
+        this.usuario = usuario;
     }
 
     public String getCpf() {
@@ -24,5 +31,13 @@ public class Paciente extends Pessoa {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 }

@@ -7,6 +7,8 @@ import java.util.Date;
 
 @Entity(name = "T_PACIENTE")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Paciente")
 public class Paciente extends Pessoa {
 
     private String cpf; //11 Dígitos - Sem pontuação

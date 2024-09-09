@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.models.entities;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
+@DiscriminatorValue("Dependente")
 public class Dependente extends Paciente {
 
     @ManyToOne

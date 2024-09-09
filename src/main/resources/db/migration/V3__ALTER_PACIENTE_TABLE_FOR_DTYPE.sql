@@ -1,1 +1,1 @@
-ALTER TABLE t_paciente ADD COLUMN dtype VARCHAR(255);
+ALTER TABLE t_paciente ADD COLUMN role VARCHAR(255);

@@ -1,0 +1,1 @@
+ALTER TABLE t_paciente ADD COLUMN dtype VARCHAR(255);

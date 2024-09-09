@@ -1,13 +1,14 @@
 package com.connectCare.connectCareApi.models.entities;
 
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
 @Entity(name = "T_PACIENTE")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Paciente")
 public class Paciente extends Pessoa {
 
     private String cpf; //11 Dígitos - Sem pontuação

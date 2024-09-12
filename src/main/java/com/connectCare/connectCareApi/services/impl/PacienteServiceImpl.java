@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.models.dtos.CreatePacienteDTO;
 import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.repositories.PacienteRepository;

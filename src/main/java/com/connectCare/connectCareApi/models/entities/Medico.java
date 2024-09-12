@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.connectCare.connectCareApi.models.dtos.UsuarioDTO;
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
 
 import jakarta.persistence.Entity;
@@ -74,9 +75,9 @@ public class Medico extends Pessoa implements Serializable {
 	public void setTeleconsulta(boolean teleconsulta) {
 		this.teleconsulta = teleconsulta;
 	}
-	
-	public Usuario getUsuario() {
-		return usuario;
+
+	public UsuarioDTO getUsuario() {
+		return new UsuarioDTO(this.usuario);
 	}
 
 	public void setUsuario(Usuario usuario) {

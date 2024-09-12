@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.services.impl;
 
 import com.connectCare.connectCareApi.models.entities.Paciente;
+import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.repositories.PacienteRepository;
 import com.connectCare.connectCareApi.services.GenericService;
 import org.springframework.beans.BeanUtils;
@@ -15,8 +16,13 @@ public class PacienteServiceImpl implements GenericService<Paciente> {
     @Autowired
     private PacienteRepository repository;
 
+    @Autowired
+    private UsuarioServiceImpl usuarioService;
+
     @Override
     public Paciente create(Paciente paciente) {
+        Usuario usuarioEncontrado = usuarioService.getById(paciente.getUsuario().getId());
+        paciente.setUsuario(usuarioEncontrado);
         return repository.save(paciente);
     }
 

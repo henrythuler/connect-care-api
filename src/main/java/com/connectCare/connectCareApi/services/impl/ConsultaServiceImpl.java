@@ -1,6 +1,9 @@
 package com.connectCare.connectCareApi.services.impl;
 
 import com.connectCare.connectCareApi.models.entities.Consulta;
+import com.connectCare.connectCareApi.models.entities.Disponibilidade;
+import com.connectCare.connectCareApi.models.entities.Medico;
+import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.repositories.ConsultaRepository;
 import com.connectCare.connectCareApi.services.GenericService;
 import org.springframework.beans.BeanUtils;
@@ -15,8 +18,26 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
     @Autowired
     private ConsultaRepository repository;
 
+    @Autowired
+    private PacienteServiceImpl pacienteService;
+
+    @Autowired
+    private MedicoServiceImpl medicoService;
+
+    @Autowired
+    private DisponibilidadeServiceImpl disponibilidadeService;
+
     @Override
     public Consulta create(Consulta consulta) {
+        Paciente pacienteEncontrado = pacienteService.getById(consulta.getPaciente().getId());
+        consulta.setPaciente(pacienteEncontrado);
+
+        Medico medicoEncontrado = medicoService.getById(consulta.getMedico().getId());
+        consulta.setMedico(medicoEncontrado);
+
+        Disponibilidade disponibilidadeEncontrada = disponibilidadeService.getById(consulta.getDisponibilidade().getId());
+        consulta.setDisponibilidade(disponibilidadeEncontrada);
+
         return repository.save(consulta);
     }
 

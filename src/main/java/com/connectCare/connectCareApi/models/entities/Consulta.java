@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,8 @@ public class Consulta {
 	private Integer id;
 	private String formaAgendamento;
 	private String tipoConsulta;
-	
+
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="id_medico")
 	private Medico medico;
@@ -26,7 +28,7 @@ public class Consulta {
 	@ManyToOne
 	@JoinColumn(name="id_paciente")
 	private Paciente paciente;
-	
+
 	@OneToOne
 	@JoinColumn(name="id_disponibilidade")
 	private Disponibilidade disponibilidade;

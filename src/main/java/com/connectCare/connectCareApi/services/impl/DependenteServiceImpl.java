@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.services.impl;
 
 import com.connectCare.connectCareApi.models.entities.Dependente;
+import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.repositories.DependenteRepository;
 import com.connectCare.connectCareApi.services.GenericService;
 import org.springframework.beans.BeanUtils;
@@ -15,8 +16,14 @@ public class DependenteServiceImpl implements GenericService<Dependente> {
     @Autowired
     private DependenteRepository repository;
 
+    @Autowired
+    private PacienteServiceImpl pacienteService;
+
     @Override
     public Dependente create(Dependente dependente) {
+        Paciente pacienteEncontrado = pacienteService.getById(dependente.getPaciente().getId());
+        dependente.setPaciente(pacienteEncontrado);
+
         return repository.save(dependente);
     }
 

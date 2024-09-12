@@ -20,7 +20,7 @@ public class Disponibilidade {
     private LocalDate dataDisponivel;
     private LocalTime horarioDisponivel;
     private boolean agendado;
-    
+
     @ManyToOne
     @JoinColumn(name="id_medico")
     private Medico medico;

@@ -1,8 +1,12 @@
 package com.connectCare.connectCareApi.controllers;
 
+import com.connectCare.connectCareApi.models.dtos.CreateMedicoDTO;
+import com.connectCare.connectCareApi.models.entities.Especialidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
+import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.MedicoServiceImpl;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +23,21 @@ public class MedicoController {
     private MedicoServiceImpl service;
 
     @PostMapping
-    public ResponseEntity<Medico> create(@RequestBody Medico medico){
-        Medico novoMedico = service.create(medico);
+    public ResponseEntity<Medico> create(@RequestBody CreateMedicoDTO medico){
+        Medico novoMedico = new Medico();
+        Usuario idUsuario = new Usuario();
+
+        Especialidade idEspecialidade = new Especialidade();
+        idEspecialidade.setId(medico.getIdEspecialidade());
+
+        idUsuario.setId(medico.getIdUsuario());
+
+        BeanUtils.copyProperties(medico, novoMedico);
+        novoMedico.setUsuario(idUsuario);
+        novoMedico.setEspecialidade(idEspecialidade);
+
+        novoMedico = service.create(novoMedico);
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoMedico.getId()).toUri();
         return ResponseEntity.created(location).body(novoMedico);
     }

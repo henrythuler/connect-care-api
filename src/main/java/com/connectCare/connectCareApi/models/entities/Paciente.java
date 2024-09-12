@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.models.entities;
 
+import com.connectCare.connectCareApi.models.dtos.UsuarioDTO;
 import com.connectCare.connectCareApi.models.superclasses.Pessoa;
 import jakarta.persistence.*;
 
@@ -12,7 +13,7 @@ import java.util.Date;
 public class Paciente extends Pessoa {
 
     private String cpf; //11 Dígitos - Sem pontuação
-    
+
     @OneToOne
     @JoinColumn(name="id_usuario")
     private Usuario usuario;
@@ -33,8 +34,8 @@ public class Paciente extends Pessoa {
         this.cpf = cpf;
     }
 
-	public Usuario getUsuario() {
-		return usuario;
+	public UsuarioDTO getUsuario() {
+		return new UsuarioDTO(usuario);
 	}
 
 	public void setUsuario(Usuario usuario) {

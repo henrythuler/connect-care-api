@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.controllers;
 
+import com.connectCare.connectCareApi.models.dtos.UsuarioDTO;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.UsuarioServiceImpl;
 
@@ -19,28 +20,31 @@ public class UsuarioController {
     private UsuarioServiceImpl service;
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody Usuario usuario){
+    public ResponseEntity<UsuarioDTO> create(@RequestBody Usuario usuario){
         Usuario novoUsuario = service.create(usuario);
+        UsuarioDTO usuarioDTO = new UsuarioDTO(novoUsuario);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
-        return ResponseEntity.created(location).body(novoUsuario);
+        return ResponseEntity.created(location).body(usuarioDTO);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Usuario> getById(@PathVariable Integer id){
+    public ResponseEntity<UsuarioDTO> getById(@PathVariable Integer id){
         Usuario usuarioEncontrado = service.getById(id);
-        return ResponseEntity.ok(usuarioEncontrado);
+        UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioEncontrado);
+        return ResponseEntity.ok(usuarioDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAll(){
-        List<Usuario> usuariosEncontrados = service.getAll();
+    public ResponseEntity<List<UsuarioDTO>> getAll(){
+        List<UsuarioDTO> usuariosEncontrados = service.getAll().stream().map(UsuarioDTO::new).toList();
         return ResponseEntity.ok(usuariosEncontrados);
     }
 
     @PutMapping
-    public ResponseEntity<Usuario> update(@RequestBody Usuario usuario){
+    public ResponseEntity<UsuarioDTO> update(@RequestBody Usuario usuario){
         Usuario usuarioAtualizado = service.update(usuario);
-        return ResponseEntity.ok(usuarioAtualizado);
+        UsuarioDTO usuarioDTO = new UsuarioDTO(usuarioAtualizado);
+        return ResponseEntity.ok(usuarioDTO);
     }
 
     @DeleteMapping("/del/{id}")

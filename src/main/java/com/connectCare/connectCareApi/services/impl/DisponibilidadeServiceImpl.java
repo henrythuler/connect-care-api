@@ -2,6 +2,7 @@ package com.connectCare.connectCareApi.services.impl;
 
 import java.util.List;
 
+import com.connectCare.connectCareApi.models.entities.Medico;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,13 @@ public class DisponibilidadeServiceImpl implements GenericService<Disponibilidad
 	@Autowired
 	private DisponibilidadeRepository repository;
 
+	@Autowired
+	private MedicoServiceImpl medicoService;
+
 	@Override
 	public Disponibilidade create(Disponibilidade disponibilidade) {
+		Medico medicoEncontrado = medicoService.getById(disponibilidade.getMedico().getId());
+		disponibilidade.setMedico(medicoEncontrado);
 		return repository.save(disponibilidade);
 	}
 

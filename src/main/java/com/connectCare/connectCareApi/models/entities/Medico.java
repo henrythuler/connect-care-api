@@ -50,7 +50,6 @@ public class Medico extends Pessoa implements Serializable {
 	public void setCrm(String crm) {
 		this.crm = crm;
 	}
-	
 
 	public BigDecimal getValorDaConsulta() {
 		return valorDaConsulta;

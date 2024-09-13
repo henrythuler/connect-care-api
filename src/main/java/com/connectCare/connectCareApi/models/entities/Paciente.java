@@ -35,7 +35,10 @@ public class Paciente extends Pessoa {
     }
 
 	public UsuarioDTO getUsuario() {
-		return new UsuarioDTO(usuario);
+		if(this.usuario != null)
+            return new UsuarioDTO(usuario);
+        else
+            return null;
 	}
 
 	public void setUsuario(Usuario usuario) {

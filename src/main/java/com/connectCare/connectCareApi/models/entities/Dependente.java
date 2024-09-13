@@ -14,21 +14,21 @@ public class Dependente extends Paciente {
 
     @ManyToOne
     @JoinColumn(name = "id_responsavel")
-    private Paciente paciente;
+    private Paciente responsavel;
 
     public Dependente() {}
 
-    public Dependente(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String cpf, Paciente paciente) {
+    public Dependente(Integer id, String nome, Date dataNascimento, char genero, String endereco, String telefone, String cpf, Paciente responsavel) {
         super(id, nome, dataNascimento, genero, endereco, telefone, cpf,null);
-        this.paciente = paciente;
+        this.responsavel = responsavel;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
+    public Paciente getResponsavel() {
+        return responsavel;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    public void setResponsavel(Paciente responsavel) {
+        this.responsavel = responsavel;
     }
 
     @Override
@@ -37,11 +37,11 @@ public class Dependente extends Paciente {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Dependente that = (Dependente) o;
-        return Objects.equals(paciente, that.paciente);
+        return Objects.equals(responsavel, that.responsavel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), paciente);
+        return Objects.hash(super.hashCode(), responsavel);
     }
 }

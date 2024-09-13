@@ -1,7 +1,10 @@
 package com.connectCare.connectCareApi.controllers;
 
+import com.connectCare.connectCareApi.models.dtos.CreateDependenteDTO;
 import com.connectCare.connectCareApi.models.entities.Dependente;
+import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.services.impl.DependenteServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +21,16 @@ public class DependenteController {
     private DependenteServiceImpl service;
 
     @PostMapping
-    public ResponseEntity<Dependente> create(@RequestBody Dependente dependente){
-        Dependente novoDependente = service.create(dependente);
+    public ResponseEntity<Dependente> create(@RequestBody CreateDependenteDTO dependente){
+        Dependente novoDependente = new Dependente();
+        Paciente pacienteResponsavel = new Paciente();
+        pacienteResponsavel.setId(dependente.getIdResponsavel());
+
+        BeanUtils.copyProperties(dependente, novoDependente);
+        novoDependente.setResponsavel(pacienteResponsavel);
+
+        novoDependente = service.create(novoDependente);
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoDependente.getId()).toUri();
         return ResponseEntity.created(location).body(novoDependente);
     }

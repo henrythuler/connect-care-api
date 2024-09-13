@@ -1,8 +1,11 @@
 package com.connectCare.connectCareApi.controllers;
 
+import com.connectCare.connectCareApi.models.dtos.CreateDisponibilidadeDTO;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
+import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.services.impl.DisponibilidadeServiceImpl;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +22,18 @@ public class DisponibilidadeController {
     private DisponibilidadeServiceImpl service;
 
     @PostMapping
-    public ResponseEntity<Disponibilidade> create(@RequestBody Disponibilidade disponibilidade){
-        Disponibilidade novoDisponibilidade = service.create(disponibilidade);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoDisponibilidade.getId()).toUri();
-        return ResponseEntity.created(location).body(novoDisponibilidade);
+    public ResponseEntity<Disponibilidade> create(@RequestBody CreateDisponibilidadeDTO disponibilidade){
+        Disponibilidade novaDisponibilidade = new Disponibilidade();
+        Medico idMedico = new Medico();
+        idMedico.setId(disponibilidade.getIdMedico());
+
+        BeanUtils.copyProperties(disponibilidade, novaDisponibilidade);
+        novaDisponibilidade.setMedico(idMedico);
+
+        novaDisponibilidade = service.create(novaDisponibilidade);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novaDisponibilidade.getId()).toUri();
+        return ResponseEntity.created(location).body(novaDisponibilidade);
     }
 
     @GetMapping(value = "/{id}")

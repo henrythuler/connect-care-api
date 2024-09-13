@@ -21,8 +21,8 @@ public class DependenteServiceImpl implements GenericService<Dependente> {
 
     @Override
     public Dependente create(Dependente dependente) {
-        Paciente pacienteEncontrado = pacienteService.getById(dependente.getPaciente().getId());
-        dependente.setPaciente(pacienteEncontrado);
+        Paciente pacienteEncontrado = pacienteService.getById(dependente.getResponsavel().getId());
+        dependente.setResponsavel(pacienteEncontrado);
 
         return repository.save(dependente);
     }

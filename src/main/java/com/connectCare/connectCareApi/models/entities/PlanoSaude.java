@@ -4,8 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
-import java.util.Objects;
 
 @Entity(name = "T_PLANO_SAUDE")
 public class PlanoSaude {
@@ -16,14 +17,19 @@ public class PlanoSaude {
     private String convenio;
     private String plano;
     private String numCarteirinha;
+    
+    @OneToOne
+    @JoinColumn(name="id_paciente")
+    private Paciente paciente;
 
     public PlanoSaude() {}
 
-    public PlanoSaude(Integer id, String convenio, String plano, String numCarteirinha) {
+    public PlanoSaude(Integer id, String convenio, String plano, String numCarteirinha, Paciente paciente) {
         this.id = id;
         this.convenio = convenio;
         this.plano = plano;
         this.numCarteirinha = numCarteirinha;
+        this.paciente = paciente;
     }
 
     public Integer getId() {
@@ -57,17 +63,62 @@ public class PlanoSaude {
     public void setNumCarteirinha(String numCarteirinha) {
         this.numCarteirinha = numCarteirinha;
     }
+    
+    public Paciente getPaciente() {
+		return paciente;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PlanoSaude that = (PlanoSaude) o;
-        return Objects.equals(id, that.id);
-    }
+	public void setPaciente(Paciente paciente) {
+		this.paciente = paciente;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((convenio == null) ? 0 : convenio.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((numCarteirinha == null) ? 0 : numCarteirinha.hashCode());
+		result = prime * result + ((paciente == null) ? 0 : paciente.hashCode());
+		result = prime * result + ((plano == null) ? 0 : plano.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PlanoSaude other = (PlanoSaude) obj;
+		if (convenio == null) {
+			if (other.convenio != null)
+				return false;
+		} else if (!convenio.equals(other.convenio))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (numCarteirinha == null) {
+			if (other.numCarteirinha != null)
+				return false;
+		} else if (!numCarteirinha.equals(other.numCarteirinha))
+			return false;
+		if (paciente == null) {
+			if (other.paciente != null)
+				return false;
+		} else if (!paciente.equals(other.paciente))
+			return false;
+		if (plano == null) {
+			if (other.plano != null)
+				return false;
+		} else if (!plano.equals(other.plano))
+			return false;
+		return true;
+	}
+
 }

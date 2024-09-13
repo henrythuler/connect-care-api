@@ -1,7 +1,11 @@
 package com.connectCare.connectCareApi.controllers;
 
+import com.connectCare.connectCareApi.models.dtos.CreatePlanoSaudeDTO;
+import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.PlanoSaude;
 import com.connectCare.connectCareApi.services.impl.PlanoSaudeServiceImpl;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +22,15 @@ public class PlanoSaudeController {
     private PlanoSaudeServiceImpl service;
 
     @PostMapping
-    public ResponseEntity<PlanoSaude> create(@RequestBody PlanoSaude planoSaude){
-        PlanoSaude novoPlanoSaude = service.create(planoSaude);
+    public ResponseEntity<PlanoSaude> create(@RequestBody CreatePlanoSaudeDTO planoSaude){
+    	PlanoSaude novoPlanoSaude = new PlanoSaude();
+    	Paciente idPaciente = new Paciente();
+        idPaciente.setId(planoSaude.getIdPaciente());
+        
+        BeanUtils.copyProperties(planoSaude, novoPlanoSaude);
+        novoPlanoSaude.setPaciente(idPaciente);
+    	
+        novoPlanoSaude = service.create(novoPlanoSaude);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoPlanoSaude.getId()).toUri();
         return ResponseEntity.created(location).body(novoPlanoSaude);
     }

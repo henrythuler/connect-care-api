@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.PlanoSaude;
 import com.connectCare.connectCareApi.repositories.PlanoSaudeRepository;
 import com.connectCare.connectCareApi.services.GenericService;
@@ -14,9 +15,14 @@ public class PlanoSaudeServiceImpl implements GenericService<PlanoSaude> {
 
     @Autowired
     private PlanoSaudeRepository repository;
+    
+    @Autowired
+    private PacienteServiceImpl pacienteService;
 
     @Override
     public PlanoSaude create(PlanoSaude planoSaude) {
+    	Paciente pacienteEncontrado = pacienteService.getById(planoSaude.getPaciente().getId());
+    	planoSaude.setPaciente(pacienteEncontrado);
         return repository.save(planoSaude);
     }
 

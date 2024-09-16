@@ -46,6 +46,14 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Consulta não encontrada..."));
     }
 
+    public List<Consulta> getByPacienteId(Integer id){
+        return repository.findByPacienteId(id);
+    }
+
+    public List<Consulta> getByMedicoId(Integer id){
+        return repository.findByMedicoId(id);
+    }
+
     @Override
     public List<Consulta> getAll() {
         return repository.findAll();

@@ -51,6 +51,18 @@ public class ConsultaController {
         return ResponseEntity.ok(consultaEncontrada);
     }
 
+    @GetMapping(value = "/paciente/{id}")
+    public ResponseEntity<List<Consulta>> getByPacienteId(@PathVariable Integer id){
+        List<Consulta> consultasEncontradas = service.getByPacienteId(id);
+        return ResponseEntity.ok(consultasEncontradas);
+    }
+
+    @GetMapping(value = "/medico/{id}")
+    public ResponseEntity<List<Consulta>> getByMedicoId(@PathVariable Integer id){
+        List<Consulta> consultasEncontradas = service.getByMedicoId(id);
+        return ResponseEntity.ok(consultasEncontradas);
+    }
+
     @GetMapping
     public ResponseEntity<List<Consulta>> getAll(){
         List<Consulta> consultasEncontradas = service.getAll();

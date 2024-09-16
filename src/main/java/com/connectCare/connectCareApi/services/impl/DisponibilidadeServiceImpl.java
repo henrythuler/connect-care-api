@@ -2,6 +2,7 @@ package com.connectCare.connectCareApi.services.impl;
 
 import java.util.List;
 
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Medico;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,14 @@ public class DisponibilidadeServiceImpl implements GenericService<Disponibilidad
 	@Override
 	public Disponibilidade getById(Integer id) {
 		return repository.findById(id).orElseThrow(() -> new RuntimeException("Disponibilidade não encontrada"));
+	}
+
+	public List<Disponibilidade> getByMedicoId(Integer id) {
+		return repository.findByMedicoId(id);
+	}
+
+	public List<Disponibilidade> getByMedicoIdData(Integer id, GetPorIntervaloDataDTO intervaloData) {
+		return repository.findByMedicoIdAndDataDisponivelBetween(id, intervaloData.getInicio(), intervaloData.getFim());
 	}
 
 	@Override

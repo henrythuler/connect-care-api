@@ -45,6 +45,10 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 		return repository.findAll();
 	}
 
+	public List<Medico> getByEspecialidadeId(Integer id){
+		return repository.findByEspecialidadeId(id);
+	}
+
 	@Override
 	public Medico update(Medico medico) {
 		Medico medicoEncontrado = repository.getReferenceById(medico.getId());

@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Consulta;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -44,6 +45,18 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
     @Override
     public Consulta getById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Consulta não encontrada..."));
+    }
+
+    public List<Consulta> getByPacienteId(Integer id){
+        return repository.findByPacienteId(id);
+    }
+
+    public List<Consulta> getByMedicoId(Integer id){
+        return repository.findByMedicoId(id);
+    }
+
+    public List<Consulta> getByPacienteIdData(Integer id, GetPorIntervaloDataDTO intervaloData){
+        return repository.findByPacienteIdAndDisponibilidadeDataDisponivelBetween(id, intervaloData.getInicio(), intervaloData.getFim());
     }
 
     @Override

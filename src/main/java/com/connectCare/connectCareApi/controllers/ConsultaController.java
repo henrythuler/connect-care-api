@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateConsultaDTO;
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Consulta;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -49,6 +50,24 @@ public class ConsultaController {
     public ResponseEntity<Consulta> getById(@PathVariable Integer id){
         Consulta consultaEncontrada = service.getById(id);
         return ResponseEntity.ok(consultaEncontrada);
+    }
+
+    @GetMapping(value = "/paciente/{id}")
+    public ResponseEntity<List<Consulta>> getByPacienteId(@PathVariable Integer id){
+        List<Consulta> consultasEncontradas = service.getByPacienteId(id);
+        return ResponseEntity.ok(consultasEncontradas);
+    }
+
+    @GetMapping(value = "/paciente/{id}/data")
+    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
+        List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, intervalo);
+        return ResponseEntity.ok(consultasEncontradas);
+    }
+
+    @GetMapping(value = "/medico/{id}")
+    public ResponseEntity<List<Consulta>> getByMedicoId(@PathVariable Integer id){
+        List<Consulta> consultasEncontradas = service.getByMedicoId(id);
+        return ResponseEntity.ok(consultasEncontradas);
     }
 
     @GetMapping

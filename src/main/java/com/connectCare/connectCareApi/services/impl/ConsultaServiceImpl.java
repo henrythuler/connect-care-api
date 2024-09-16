@@ -37,6 +37,9 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
         consulta.setMedico(medicoEncontrado);
 
         Disponibilidade disponibilidadeEncontrada = disponibilidadeService.getById(consulta.getDisponibilidade().getId());
+        disponibilidadeEncontrada.setAgendado(true);
+        disponibilidadeService.update(disponibilidadeEncontrada);
+
         consulta.setDisponibilidade(disponibilidadeEncontrada);
 
         return repository.save(consulta);

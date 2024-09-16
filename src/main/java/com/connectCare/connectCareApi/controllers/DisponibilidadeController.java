@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateDisponibilidadeDTO;
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.services.impl.DisponibilidadeServiceImpl;
@@ -40,6 +41,18 @@ public class DisponibilidadeController {
     public ResponseEntity<Disponibilidade> getById(@PathVariable Integer id){
         Disponibilidade disponibilidadeEncontrado = service.getById(id);
         return ResponseEntity.ok(disponibilidadeEncontrado);
+    }
+
+    @GetMapping(value = "/medico/{id}")
+    public ResponseEntity<List<Disponibilidade>> getByMedicoId(@PathVariable Integer id){
+        List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoId(id);
+        return ResponseEntity.ok(disponibilidadesEncontradas);
+    }
+
+    @GetMapping(value = "/medico/{id}/data")
+    public ResponseEntity<List<Disponibilidade>> getByMedicoIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
+        List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoIdData(id, intervalo);
+        return ResponseEntity.ok(disponibilidadesEncontradas);
     }
 
     @GetMapping

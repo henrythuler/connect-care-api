@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Consulta;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -10,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -55,8 +55,8 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
         return repository.findByMedicoId(id);
     }
 
-    public List<Consulta> getByPacienteIdData(Integer id, LocalDate start, LocalDate end){
-        return repository.findByPacienteIdAndDisponibilidadeDataDisponivelBetween(id, start, end);
+    public List<Consulta> getByPacienteIdData(Integer id, GetPorIntervaloDataDTO intervaloData){
+        return repository.findByPacienteIdAndDisponibilidadeDataDisponivelBetween(id, intervaloData.getInicio(), intervaloData.getFim());
     }
 
     @Override

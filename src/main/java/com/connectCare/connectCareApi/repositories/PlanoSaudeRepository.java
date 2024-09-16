@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlanoSaudeRepository extends JpaRepository<PlanoSaude, Integer> {
+
+    PlanoSaude findByPacienteId(Integer id);
+
 }

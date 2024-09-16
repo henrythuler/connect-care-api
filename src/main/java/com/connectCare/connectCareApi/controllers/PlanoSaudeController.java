@@ -41,6 +41,12 @@ public class PlanoSaudeController {
         return ResponseEntity.ok(planoSaudeEncontrado);
     }
 
+    @GetMapping(value = "/paciente/{id}")
+    public ResponseEntity<PlanoSaude> getByPacienteId(@PathVariable Integer id){
+        PlanoSaude planoSaudeEncontrado = service.getByPacienteId(id);
+        return ResponseEntity.ok(planoSaudeEncontrado);
+    }
+
     @GetMapping
     public ResponseEntity<List<PlanoSaude>> getAll(){
         List<PlanoSaude> planosSaudeEncontrados = service.getAll();

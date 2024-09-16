@@ -1,7 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateConsultaDTO;
-import com.connectCare.connectCareApi.models.dtos.GetConsultaPorDataDTO;
+import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Consulta;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -9,13 +9,11 @@ import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.services.impl.ConsultaServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,8 +59,8 @@ public class ConsultaController {
     }
 
     @GetMapping(value = "/paciente/{id}/data")
-    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody GetConsultaPorDataDTO data){
-        List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, data.getStart(), data.getEnd());
+    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
+        List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, intervalo);
         return ResponseEntity.ok(consultasEncontradas);
     }
 

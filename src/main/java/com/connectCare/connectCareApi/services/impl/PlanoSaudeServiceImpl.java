@@ -31,6 +31,10 @@ public class PlanoSaudeServiceImpl implements GenericService<PlanoSaude> {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Plano de Saúde não encontrado..."));
     }
 
+    public PlanoSaude getByPacienteId(Integer id) {
+        return repository.findByPacienteId(id);
+    }
+
     @Override
     public List<PlanoSaude> getAll() {
         return repository.findAll();

@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -52,6 +53,10 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
 
     public List<Consulta> getByMedicoId(Integer id){
         return repository.findByMedicoId(id);
+    }
+
+    public List<Consulta> getByPacienteIdData(Integer id, LocalDate start, LocalDate end){
+        return repository.findByPacienteIdAndDisponibilidadeDataDisponivelBetween(id, start, end);
     }
 
     @Override

@@ -32,6 +32,10 @@ public class DependenteServiceImpl implements GenericService<Dependente> {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Dependente não encontrado..."));
     }
 
+    public List<Dependente> getByResponsavelId(Integer id){
+        return repository.findByResponsavelId(id);
+    }
+
     @Override
     public List<Dependente> getAll() {
         return repository.findAll();

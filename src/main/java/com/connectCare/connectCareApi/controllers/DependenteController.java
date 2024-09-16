@@ -41,6 +41,12 @@ public class DependenteController {
         return ResponseEntity.ok(dependenteEncontrado);
     }
 
+    @GetMapping(value = "/responsavel/{id}")
+    public ResponseEntity<List<Dependente>> getByResponsavelId(@PathVariable Integer id){
+        List<Dependente> dependentesEncontrados = service.getByResponsavelId(id);
+        return ResponseEntity.ok(dependentesEncontrados);
+    }
+
     @GetMapping
     public ResponseEntity<List<Dependente>> getAll(){
         List<Dependente> dependentesEncontrados = service.getAll();

@@ -1,16 +1,37 @@
 package com.connectCare.connectCareApi.models.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 import java.util.Objects;
 
 public class CreatePacienteDTO {
 
+    @NotNull(message = "Nome é obrigatório!")
+    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
     private String nome;
+
+    @NotNull(message = "Data de Nascimento é obrigatória!")
     private Date dataNascimento;
+
+    @NotBlank(message = "Gênero é obrigatório!")
+    @Size(min = 1, max = 1, message = "Escreva F para Feminimo ou M para Masculino")
     private char genero; //F - Feminino | M - Masculino
+
+    @NotNull(message = "Endereço é obrigatório!")
+    @Size(min = 2, max = 255, message = "Endereço deve possuir entre 2 a 255 caracteres!")
     private String endereco;
+
+    @NotNull(message = "Telefone é obrigatório!")
+    @Size(min = 2, max = 18, message = "Telefone deve possuir entre 8 a 18 caracteres!")
     private String telefone;
+
+    @NotNull(message = "CPF é obrigatório!")
+    @Size(min = 11, max = 11, message = "CPF deve possuir 11 caracteres! (Sem pontuação)")
     private String cpf; //11 Dígitos - Sem pontuação
+
     private Integer idUsuario;
 
     public CreatePacienteDTO() {

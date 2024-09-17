@@ -1,14 +1,22 @@
 package com.connectCare.connectCareApi.models.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
 public class CreateDisponibilidadeDTO {
 
+    @NotNull(message = "Data é obrigatória!")
     private LocalDate dataDisponivel;
+
+    @NotNull(message = "Horário é obrigatório!")
     private LocalTime horarioDisponivel;
+
     private boolean agendado;
+
+    @NotNull(message = "ID do médico é obrigatório!")
     private Integer idMedico;
 
     public CreateDisponibilidadeDTO() {

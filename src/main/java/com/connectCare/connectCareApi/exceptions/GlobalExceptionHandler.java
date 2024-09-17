@@ -13,6 +13,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NenhumRegistroEncontradoException.class)
     public ResponseEntity<String> handleNenhumRegistroEncontradoException(NenhumRegistroEncontradoException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -30,6 +35,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DisponibilidadeNaoEncontradaException.class)
     public ResponseEntity<String> handleDisponibilidadeNaoEncontradaException(DisponibilidadeNaoEncontradaException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EspecialidadeNaoEncontradaException.class)
+    public ResponseEntity<String> handleEspecialidadeNaoEncontradaException(EspecialidadeNaoEncontradaException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConsultaNaoEncontradaException.class)
+    public ResponseEntity<String> handleConsultaNaoEncontradaException(ConsultaNaoEncontradaException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 

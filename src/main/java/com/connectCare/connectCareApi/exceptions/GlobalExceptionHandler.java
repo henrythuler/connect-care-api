@@ -28,4 +28,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DisponibilidadeNaoEncontradaException.class)
+    public ResponseEntity<String> handleDisponibilidadeNaoEncontradaException(DisponibilidadeNaoEncontradaException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
 }

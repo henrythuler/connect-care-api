@@ -8,7 +8,6 @@ import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.repositories.PacienteRepository;
 import com.connectCare.connectCareApi.services.GenericService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

@@ -1,13 +1,24 @@
 package com.connectCare.connectCareApi.models.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class CreateConsultaDTO {
 
+    @NotNull(message = "Forma de Agendamento é obrigatória!")
     private String formaAgendamento;
+
+    @NotNull(message = "Tipo da Consulta é obrigatória!")
     private String tipoConsulta;
+
+    @NotNull(message = "ID do médico é obrigatório!")
     private Integer idMedico;
+
+    @NotNull(message = "ID do paciente é obrigatório!")
     private Integer idPaciente;
+
+    @NotNull(message = "ID da disponibilidade é obrigatório!")
     private Integer idDisponibilidade;
 
     public CreateConsultaDTO() {

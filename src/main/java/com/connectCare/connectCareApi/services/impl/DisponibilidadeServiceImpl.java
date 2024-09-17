@@ -82,7 +82,7 @@ public class DisponibilidadeServiceImpl implements GenericService<Disponibilidad
 			Disponibilidade disponibilidadeEncontrada = repository.findById(id).orElseThrow(() -> new DisponibilidadeNaoEncontradaException(id));
 			repository.delete(disponibilidadeEncontrada);
 		}catch(DataIntegrityViolationException e) {
-			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois esse paciente está relacionado com algum dependente.");
+			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois essa disponibilidade está relacionada com alguma consulta.");
 		}
 	}
 	

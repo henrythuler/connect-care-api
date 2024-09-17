@@ -63,7 +63,7 @@ public class UsuarioServiceImpl implements GenericService<Usuario> {
 			Usuario usuarioEncontrado = repository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
 			repository.delete(usuarioEncontrado);
 		}catch(DataIntegrityViolationException e) {
-			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois esse paciente está relacionado com algum dependente.");
+			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois esse usuário está relacionado com algum paciente ou médico.");
 		}
 
 	}

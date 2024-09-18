@@ -25,7 +25,7 @@ public class CreatePacienteDTO {
     private String endereco;
 
     @NotNull(message = "Telefone é obrigatório!")
-    @Size(min = 2, max = 18, message = "Telefone deve possuir entre 8 a 18 caracteres!")
+    @Size(min = 8, max = 18, message = "Telefone deve possuir entre 8 a 18 caracteres!")
     private String telefone;
 
     @NotNull(message = "CPF é obrigatório!")

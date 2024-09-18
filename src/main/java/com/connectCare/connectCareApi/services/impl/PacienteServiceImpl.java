@@ -26,9 +26,14 @@ public class PacienteServiceImpl implements GenericService<Paciente> {
 
     @Override
     public Paciente create(Paciente paciente) {
-        Usuario usuarioEncontrado = usuarioService.getById(paciente.getUsuario().getId());
-        paciente.setUsuario(usuarioEncontrado);
-        return repository.save(paciente);
+    	try {
+    		Usuario usuarioEncontrado = usuarioService.getById(paciente.getUsuario().getId());
+            paciente.setUsuario(usuarioEncontrado);
+            return repository.save(paciente);
+		} catch (DataIntegrityViolationException e){
+            throw new OperacaoBancoDeDadosException("Campo CPF já cadastrado!");
+		}
+        
     }
 
     @Override

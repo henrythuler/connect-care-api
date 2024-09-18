@@ -21,10 +21,14 @@ public class UsuarioServiceImpl implements GenericService<Usuario> {
 
 	@Override
 	public Usuario create(Usuario usuario) {
-		if(!usuario.getRole().equalsIgnoreCase("MEDICO") || !usuario.getRole().equalsIgnoreCase("PACIENTE"))
-			throw new IllegalArgumentException("Role do usuário deve ser PACIENTE ou MEDICO");
-		usuario.setRole(usuario.getRole().toUpperCase());
-		return repository.save(usuario);
+		try{
+			if(!usuario.getRole().equalsIgnoreCase("MEDICO") && !usuario.getRole().equalsIgnoreCase("PACIENTE"))
+				throw new IllegalArgumentException("Role do usuário deve ser PACIENTE ou MEDICO");
+			usuario.setRole(usuario.getRole().toUpperCase());
+			return repository.save(usuario);
+		}catch(DataIntegrityViolationException e) {
+			throw new OperacaoBancoDeDadosException("Email já cadastrado!");
+		}
 	}
 
 	@Override

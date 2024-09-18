@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.services.impl;
 
 import com.connectCare.connectCareApi.exceptions.ConsultaNaoEncontradaException;
+import com.connectCare.connectCareApi.exceptions.HorarioAgendadoException;
 import com.connectCare.connectCareApi.exceptions.NenhumRegistroEncontradoException;
 import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
 import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
@@ -36,9 +37,9 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
     @Override
     public Consulta create(Consulta consulta) {
 
-        if(!consulta.getTipoConsulta().equalsIgnoreCase("TELECONSULTA") || !consulta.getTipoConsulta().equalsIgnoreCase("PRESENCIAL"))
+        if(!consulta.getTipoConsulta().equalsIgnoreCase("TELECONSULTA") && !consulta.getTipoConsulta().equalsIgnoreCase("PRESENCIAL"))
             throw new IllegalArgumentException("Tipo da Consulta deve ser TELECONSULTA ou PRESENCIAL.");
-        if(!consulta.getFormaAgendamento().equalsIgnoreCase("CONVENIO") || !consulta.getFormaAgendamento().equalsIgnoreCase("PARTICULAR"))
+        if(!consulta.getFormaAgendamento().equalsIgnoreCase("CONVENIO") && !consulta.getFormaAgendamento().equalsIgnoreCase("PARTICULAR"))
             throw new IllegalArgumentException("Forma de Agendamento deve ser CONVENIO ou PARTICULAR.");
 
         Paciente pacienteEncontrado = pacienteService.getById(consulta.getPaciente().getId());
@@ -48,12 +49,18 @@ public class ConsultaServiceImpl implements GenericService<Consulta> {
         consulta.setMedico(medicoEncontrado);
 
         Disponibilidade disponibilidadeEncontrada = disponibilidadeService.getById(consulta.getDisponibilidade().getId());
-        disponibilidadeEncontrada.setAgendado(true);
-        disponibilidadeService.update(disponibilidadeEncontrada);
 
-        consulta.setDisponibilidade(disponibilidadeEncontrada);
+        if(disponibilidadeEncontrada.isAgendado()){
+            throw new HorarioAgendadoException(disponibilidadeEncontrada.getDataDisponivel(), disponibilidadeEncontrada.getHorarioDisponivel());
+        }else{
+            disponibilidadeEncontrada.setAgendado(true);
+            disponibilidadeService.update(disponibilidadeEncontrada);
 
-        return repository.save(consulta);
+            consulta.setDisponibilidade(disponibilidadeEncontrada);
+
+            return repository.save(consulta);
+        }
+
     }
 
     @Override

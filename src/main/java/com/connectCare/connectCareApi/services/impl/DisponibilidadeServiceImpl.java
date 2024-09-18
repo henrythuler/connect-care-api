@@ -1,16 +1,20 @@
 package com.connectCare.connectCareApi.services.impl;
 
-import java.util.List;
-
+import com.connectCare.connectCareApi.exceptions.DisponibilidadeNaoEncontradaException;
+import com.connectCare.connectCareApi.exceptions.NenhumRegistroEncontradoException;
+import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
 import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
-import com.connectCare.connectCareApi.models.entities.Medico;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
+import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.repositories.DisponibilidadeRepository;
 import com.connectCare.connectCareApi.services.GenericService;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DisponibilidadeServiceImpl implements GenericService<Disponibilidade> {
@@ -30,32 +34,56 @@ public class DisponibilidadeServiceImpl implements GenericService<Disponibilidad
 
 	@Override
 	public Disponibilidade getById(Integer id) {
-		return repository.findById(id).orElseThrow(() -> new RuntimeException("Disponibilidade não encontrada"));
+		return repository.findById(id).orElseThrow(() -> new DisponibilidadeNaoEncontradaException(id));
 	}
 
 	public List<Disponibilidade> getByMedicoId(Integer id) {
-		return repository.findByMedicoId(id);
+		List<Disponibilidade> disponibilidadesEncontradas = repository.findByMedicoId(id);
+
+		if(disponibilidadesEncontradas.isEmpty()) throw new NenhumRegistroEncontradoException("Disponiblidade");
+		return disponibilidadesEncontradas;
 	}
 
 	public List<Disponibilidade> getByMedicoIdData(Integer id, GetPorIntervaloDataDTO intervaloData) {
-		return repository.findByMedicoIdAndDataDisponivelBetween(id, intervaloData.getInicio(), intervaloData.getFim());
+		List<Disponibilidade> disponibilidadesEncontradas = repository.findByMedicoIdAndDataDisponivelBetween(id, intervaloData.getInicio(),intervaloData.getFim());
+
+		if(disponibilidadesEncontradas.isEmpty()) throw new NenhumRegistroEncontradoException("Disponibilidade");
+		return disponibilidadesEncontradas;
 	}
 
 	@Override
 	public List<Disponibilidade> getAll() {
-		return repository.findAll();
+		List<Disponibilidade> disponibilidadesEncontradas = repository.findAll();
+
+		if(disponibilidadesEncontradas.isEmpty()) throw new NenhumRegistroEncontradoException("Disponibilidade");
+		return disponibilidadesEncontradas;
 	}
 
 	@Override
 	public Disponibilidade update(Disponibilidade disponibilidade) {
-		Disponibilidade disponibilidadeEncontrada = repository.getReferenceById(disponibilidade.getId());
-        BeanUtils.copyProperties(disponibilidade, disponibilidadeEncontrada);
-        return repository.save(disponibilidadeEncontrada);
+		try{
+			Disponibilidade disponibilidadeEncontrada = repository.getReferenceById(disponibilidade.getId());
+
+			disponibilidadeEncontrada.setAgendado(disponibilidade.isAgendado());
+			disponibilidadeEncontrada.setDataDisponivel(disponibilidade.getDataDisponivel());
+			disponibilidadeEncontrada.setHorarioDisponivel(disponibilidade.getHorarioDisponivel());
+
+			return repository.save(disponibilidadeEncontrada);
+		}catch (EntityNotFoundException e){
+			throw new DisponibilidadeNaoEncontradaException(disponibilidade.getId());
+		}catch(Exception e){
+			throw new OperacaoBancoDeDadosException();
+		}
 	}
 
 	@Override
 	public void delete(Integer id) {
-		repository.deleteById(id);
+		try{
+			Disponibilidade disponibilidadeEncontrada = repository.findById(id).orElseThrow(() -> new DisponibilidadeNaoEncontradaException(id));
+			repository.delete(disponibilidadeEncontrada);
+		}catch(DataIntegrityViolationException e) {
+			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois essa disponibilidade está relacionada com alguma consulta.");
+		}
 	}
 	
 }

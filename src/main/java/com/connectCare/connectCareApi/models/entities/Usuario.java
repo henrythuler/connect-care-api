@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="t_usuario")
@@ -17,8 +19,16 @@ public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@NotNull(message = "Email é obrigatório!")
+	@Size(min = 6, max = 128, message = "Email deve conter entre 6 e 128 caracteres")
 	private String email;
+
+	@NotNull(message = "Senha é obrigatória!")
+	@Size(min = 6, max = 24, message = "Senha deve conter entre 2 e 24 caracteres")
 	private String senha;
+
+	@NotNull(message = "Role é obrigatória! (Paciente ou Médico)")
 	private String role;
 	
 	public Usuario() {}

@@ -48,4 +48,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(DependenteNaoEncontradoException.class)
+    public ResponseEntity<String> handleDependenteNaoEncontradoException(DependenteNaoEncontradoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MedicoNaoEncontradoException.class)
+    public ResponseEntity<String> handleMedicoNaoEncontradoException(MedicoNaoEncontradoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PlanoSaudeNaoEncontradoException.class)
+    public ResponseEntity<String> handlePlanoSaudeNaoEncontradoException(PlanoSaudeNaoEncontradoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HorarioAgendadoException.class)
+    public ResponseEntity<String> handleHorarioAgendadoException(HorarioAgendadoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

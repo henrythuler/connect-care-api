@@ -1,11 +1,17 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.exceptions.NenhumRegistroEncontradoException;
+import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
+import com.connectCare.connectCareApi.exceptions.PlanoSaudeNaoEncontradoException;
 import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.PlanoSaude;
 import com.connectCare.connectCareApi.repositories.PlanoSaudeRepository;
 import com.connectCare.connectCareApi.services.GenericService;
-import org.springframework.beans.BeanUtils;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +27,19 @@ public class PlanoSaudeServiceImpl implements GenericService<PlanoSaude> {
 
     @Override
     public PlanoSaude create(PlanoSaude planoSaude) {
-    	Paciente pacienteEncontrado = pacienteService.getById(planoSaude.getPaciente().getId());
-    	planoSaude.setPaciente(pacienteEncontrado);
-        return repository.save(planoSaude);
+    	try {
+    		Paciente pacienteEncontrado = pacienteService.getById(planoSaude.getPaciente().getId());
+        	planoSaude.setPaciente(pacienteEncontrado);
+            return repository.save(planoSaude);
+		} catch (DataIntegrityViolationException e){
+            throw new OperacaoBancoDeDadosException("Campo numero da carteirinha já cadastrado!");
+		}
+    	
     }
 
     @Override
     public PlanoSaude getById(Integer id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Plano de Saúde não encontrado..."));
+        return repository.findById(id).orElseThrow(() -> new PlanoSaudeNaoEncontradoException(id));
     }
 
     public PlanoSaude getByPacienteId(Integer id) {
@@ -37,18 +48,39 @@ public class PlanoSaudeServiceImpl implements GenericService<PlanoSaude> {
 
     @Override
     public List<PlanoSaude> getAll() {
-        return repository.findAll();
+    	List<PlanoSaude> planosSaudeEncontrados = repository.findAll();
+    	if(planosSaudeEncontrados.isEmpty()) throw new NenhumRegistroEncontradoException("Plano de Saúde");
+        return planosSaudeEncontrados;
     }
 
     @Override
     public PlanoSaude update(PlanoSaude planoSaude) {
-        PlanoSaude planoSaudeEncontrado = repository.getReferenceById(planoSaude.getId());
-        BeanUtils.copyProperties(planoSaude, planoSaudeEncontrado);
-        return repository.save(planoSaudeEncontrado);
+    	try {
+    		PlanoSaude planoSaudeEncontrado = repository.getReferenceById(planoSaude.getId());
+            
+    		planoSaudeEncontrado.setConvenio(planoSaude.getConvenio());
+    		planoSaudeEncontrado.setPlano(planoSaude.getPlano());
+    		planoSaudeEncontrado.setNumCarteirinha(planoSaude.getNumCarteirinha());
+    		
+            return repository.save(planoSaudeEncontrado);
+		} catch (EntityNotFoundException e){
+			throw new PlanoSaudeNaoEncontradoException(planoSaude.getId());
+		} catch(DataIntegrityViolationException e){
+            throw new OperacaoBancoDeDadosException("Campo número da carteirinha já cadastrado!");
+        } catch (Exception e) {
+        	throw new OperacaoBancoDeDadosException();
+		}
+        
     }
 
     @Override
     public void delete(Integer id) {
-        repository.deleteById(id);
+    	try {
+    		PlanoSaude planoSaudeEncontrado = repository.findById(id).orElseThrow(() -> new PlanoSaudeNaoEncontradoException(id));
+    		repository.delete(planoSaudeEncontrado);
+		} catch (DataIntegrityViolationException e) {
+            throw new OperacaoBancoDeDadosException("Não foi possível excluir o plano de saúde.");
+		}
+        
     }
 }

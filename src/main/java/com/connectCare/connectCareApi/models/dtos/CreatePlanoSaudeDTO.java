@@ -1,11 +1,25 @@
 package com.connectCare.connectCareApi.models.dtos;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class CreatePlanoSaudeDTO {
 	
 	private Integer id;
+	
+	@NotNull(message = "Convenio é obrigatório!")
+    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
     private String convenio;
+	
+	@NotNull(message = "Plano é obrigatório!")
+    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
     private String plano;
+	
+	@NotNull(message = "Numero da Cartarinha é obrigatório!")
+    @Size(min = 8, max = 16, message = "Nome deve possuir entre 8 a 16 caracteres!")
     private String numCarteirinha;
+	
+	@NotNull(message = "Paciente é obrigatório!")
     private Integer idPaciente;
     
 	public CreatePlanoSaudeDTO() {}

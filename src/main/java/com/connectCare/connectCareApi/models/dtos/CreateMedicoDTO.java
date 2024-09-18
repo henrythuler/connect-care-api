@@ -4,17 +4,47 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class CreateMedicoDTO {
 
+	@NotNull(message = "Nome é obrigatório!")
+    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
     private String nome;
+	
+	@NotNull(message = "Data de Nascimento é obrigatória!")
     private Date dataNascimento;
+	
+	@NotBlank(message = "Gênero é obrigatório!")
+    @Size(min = 1, max = 1, message = "Escreva F para Feminimo ou M para Masculino")
     private char genero; //F - Feminino | M - Masculino
+	
+	@NotNull(message = "Endereço é obrigatório!")
+	@Size(min = 2, max = 255, message = "Endereço deve possuir entre 2 a 255 caracteres!")
     private String endereco;
+	
+	@NotNull(message = "Telefone é obrigatório!")
+    @Size(min = 8, max = 18, message = "Telefone deve possuir entre 8 a 18 caracteres!")
     private String telefone;
+	
+	@NotNull(message = "CRM é obrigatório!")
+    @Size(min = 13, max = 13, message = "CRM deve possuir 13 caracteres com esse formato(CRM/SP 123456)! (Sem pontuação)")
     private String crm;
+	
+	@NotNull(message = "Valor da consulta é obrigatório!")
+    @Size(min = 4, max = 11, message = "Valor da consulta deve possuir esse formato(100.00)!")
     private BigDecimal valorDaConsulta;
+	
+	@NotNull(message = "Presencial é obrigatório!")
+	@Size(min = 4, max = 5, message = "Presencial deve Sim ou Não!")
     private boolean presencial;
+	
+	@NotNull(message = "Teleconsulta é obrigatório!")
+	@Size(min = 4, max = 5, message = "Presencial deve Sim ou Não!")
     private boolean teleconsulta;
+	
     private Integer idUsuario;
     private Integer idEspecialidade;
 

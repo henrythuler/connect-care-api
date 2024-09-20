@@ -2,13 +2,13 @@ package com.connectCare.connectCareApi.models.entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+
 
 @Entity
 @Table(name="t_usuario")
@@ -19,25 +19,19 @@ public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	@NotNull(message = "Email é obrigatório!")
-	@Size(min = 6, max = 128, message = "Email deve conter entre 6 e 128 caracteres")
 	private String email;
-
-	@NotNull(message = "Senha é obrigatória!")
-	@Size(min = 6, max = 24, message = "Senha deve conter entre 2 e 24 caracteres")
-	private String senha;
-
-	@NotNull(message = "Role é obrigatória! (Paciente ou Médico)")
+	
+	@Column(name="senha")
+	private String password;
 	private String role;
 	
 	public Usuario() {}
 
-	public Usuario(Integer id, String email, String senha, String role) {
+	public Usuario(Integer id, String email, String password, String role) {
 		super();
 		this.id = id;
 		this.email = email;
-		this.senha = senha;
+		this.password = password;
 		this.role = role;
 	}
 
@@ -57,12 +51,12 @@ public class Usuario implements Serializable {
 		this.email = email;
 	}
 
-	public String getSenha() {
-		return senha;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getRole() {
@@ -80,7 +74,7 @@ public class Usuario implements Serializable {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
-		result = prime * result + ((senha == null) ? 0 : senha.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		return result;
 	}
 
@@ -108,12 +102,12 @@ public class Usuario implements Serializable {
 				return false;
 		} else if (!role.equals(other.role))
 			return false;
-		if (senha == null) {
-			if (other.senha != null)
+		if (password == null) {
+			if (other.password != null)
 				return false;
-		} else if (!senha.equals(other.senha))
+		} else if (!password.equals(other.password))
 			return false;
 		return true;
 	}
-	
+
 }

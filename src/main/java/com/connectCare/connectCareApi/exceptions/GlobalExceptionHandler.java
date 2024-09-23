@@ -18,6 +18,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NaoAutorizadoException.class)
+    public ResponseEntity<String> handleNaoAutorizadoException(NaoAutorizadoException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(NenhumRegistroEncontradoException.class)
     public ResponseEntity<String> handleNenhumRegistroEncontradoException(NenhumRegistroEncontradoException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);

@@ -1,14 +1,18 @@
 package com.connectCare.connectCareApi.services.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.connectCare.connectCareApi.exceptions.MedicoNaoEncontradoException;
+import com.connectCare.connectCareApi.exceptions.NaoAutorizadoException;
 import com.connectCare.connectCareApi.exceptions.NenhumRegistroEncontradoException;
 import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
 import com.connectCare.connectCareApi.models.entities.Especialidade;
 import com.connectCare.connectCareApi.models.entities.Usuario;
+import com.connectCare.connectCareApi.utils.UsuarioAutenticado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -32,6 +36,12 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 	@Override
 	public Medico create(Medico medico) {
 		try {
+
+			//Verificando se o ID do usuário autenticado é igual ao ID do usuário associado ao médico
+			if(!Objects.equals(medico.getUsuario().getId(), UsuarioAutenticado.getUsuarioAutenticado().getId())){
+				throw new NaoAutorizadoException();
+			}
+
 			Usuario usuarioEncontrado = usuarioService.getById(medico.getUsuario().getId());
 			medico.setUsuario(usuarioEncontrado);
 
@@ -52,6 +62,10 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 
 	@Override
 	public List<Medico> getAll() {
+		//Verificando se o atual usuário é ADMIN
+		if(!UsuarioAutenticado.getUsuarioAutenticado().getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
+			throw new NaoAutorizadoException();
+		}
 		List<Medico> medicosEncontrados = repository.findAll();
 		if(medicosEncontrados.isEmpty()) throw new NenhumRegistroEncontradoException("Médico");
 		return medicosEncontrados;
@@ -66,6 +80,12 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 	@Override
 	public Medico update(Medico medico) {
 		try {
+
+			//Verificando se o ID do usuário autenticado é igual ao ID do usuário associado ao médico
+			if(!Objects.equals(medico.getUsuario().getId(), UsuarioAutenticado.getUsuarioAutenticado().getId())){
+				throw new NaoAutorizadoException();
+			}
+
 			Medico medicoEncontrado = repository.getReferenceById(medico.getId());
 			medicoEncontrado.setCrm(medico.getCrm());
 			medicoEncontrado.setNome(medico.getNome());
@@ -91,6 +111,12 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 	public void delete(Integer id) {
 		try {
 			Medico medicoEncontrado = repository.findById(id).orElseThrow(() -> new MedicoNaoEncontradoException(id));
+
+			//Verificando se o ID do usuário autenticado é igual ao ID do usuário associado ao médico
+			if(!Objects.equals(medicoEncontrado.getUsuario().getId(), UsuarioAutenticado.getUsuarioAutenticado().getId())){
+				throw new NaoAutorizadoException();
+			}
+
 			repository.delete(medicoEncontrado);
 		} catch (DataIntegrityViolationException e) {
             throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois esse médico está relacionado com alguma disponibilidade ou Consulta.");

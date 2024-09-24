@@ -12,11 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserInfoDetails implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;
+	private Integer id;
 	private String email; 
     private String password; 
     private List<GrantedAuthority> authorities;
     
-    public UserInfoDetails(Usuario usuario) { 
+    public UserInfoDetails(Usuario usuario) {
+		id = usuario.getId();
         email = usuario.getEmail(); 
         password = usuario.getPassword(); 
         authorities = Arrays.stream(usuario.getRole().split(",")) 
@@ -38,5 +40,7 @@ public class UserInfoDetails implements UserDetails {
 	public String getUsername() {
 		return email;
 	}
-	
+
+	public Integer getId(){ return id; }
+
 }

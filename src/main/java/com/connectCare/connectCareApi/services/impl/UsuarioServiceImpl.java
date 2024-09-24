@@ -1,5 +1,6 @@
 package com.connectCare.connectCareApi.services.impl;
 
+import com.connectCare.connectCareApi.exceptions.NaoAutorizadoException;
 import com.connectCare.connectCareApi.exceptions.NenhumRegistroEncontradoException;
 import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
 import com.connectCare.connectCareApi.exceptions.UsuarioNaoEncontradoException;
@@ -7,9 +8,11 @@ import com.connectCare.connectCareApi.models.entities.UserInfoDetails;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.repositories.UsuarioRepository;
 import com.connectCare.connectCareApi.services.GenericService;
+import com.connectCare.connectCareApi.utils.UsuarioAutenticado;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -64,6 +68,12 @@ public class UsuarioServiceImpl implements GenericService<Usuario>, UserDetailsS
 	@Override
 	public List<Usuario> getAll() {
 		List<Usuario> usuariosEncontrados = repository.findAll();
+		
+		//Verificando se o atual usuário é ADMIN
+        if(!UsuarioAutenticado.getUsuarioAutenticado().getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
+            throw new NaoAutorizadoException();
+        }
+		
 		if(usuariosEncontrados.isEmpty()) throw new NenhumRegistroEncontradoException("Usuário");
 		return usuariosEncontrados;
 	}
@@ -73,6 +83,11 @@ public class UsuarioServiceImpl implements GenericService<Usuario>, UserDetailsS
 	public Usuario update(Usuario usuario) {
 		try{
 			Usuario usuarioEncontrado = repository.getReferenceById(usuario.getId());
+			
+			//Verificando se o ID do usuário autenticado é igual ao ID do usuário associado ao usuario
+	        if(!Objects.equals(usuarioEncontrado.getId(), UsuarioAutenticado.getUsuarioAutenticado().getId())){
+	            throw new NaoAutorizadoException();
+	        }
 
 			usuarioEncontrado.setEmail(usuario.getEmail());
 			usuarioEncontrado.setPassword(usuario.getPassword());
@@ -91,6 +106,12 @@ public class UsuarioServiceImpl implements GenericService<Usuario>, UserDetailsS
 	public void delete(Integer id) {
 		try{
 			Usuario usuarioEncontrado = repository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
+			
+			//Verificando se o ID do usuário autenticado é igual ao ID do usuário associado ao usuario
+	        if(!Objects.equals(usuarioEncontrado.getId(), UsuarioAutenticado.getUsuarioAutenticado().getId())){
+	            throw new NaoAutorizadoException();
+	        }
+	        
 			repository.delete(usuarioEncontrado);
 		}catch(DataIntegrityViolationException e) {
 			throw new OperacaoBancoDeDadosException("Não foi possível excluir, pois esse usuário está relacionado com algum paciente ou médico.");

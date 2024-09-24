@@ -6,6 +6,7 @@ import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.services.impl.DisponibilidadeServiceImpl;
 
+import com.connectCare.connectCareApi.utils.UsuarioAutenticado;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,7 @@ public class DisponibilidadeController {
     @GetMapping
     public ResponseEntity<List<Disponibilidade>> getAll(){
         List<Disponibilidade> disponibilidadesEncontrados = service.getAll();
+        System.out.println(UsuarioAutenticado.getUsuarioAutenticado().getId());
         return ResponseEntity.ok(disponibilidadesEncontrados);
     }
 

@@ -1,11 +1,17 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.components.JwtComponent;
+import com.connectCare.connectCareApi.exceptions.OperacaoBancoDeDadosException;
 import com.connectCare.connectCareApi.models.dtos.CreateUsuarioDTO;
+import com.connectCare.connectCareApi.models.dtos.LoginDTO;
 import com.connectCare.connectCareApi.models.dtos.UsuarioDTO;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.UsuarioServiceImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +36,21 @@ public class UsuarioController {
         this.authenticationManager = authenticationManager; 
     }
 
-    @PostMapping(value = "/register")
+    @Operation(summary = "Cadastra um novo usuário",
+        description = "Cadastra um novo usuário de acordo com as informações passadas no formato JSON",
+        tags = {"Autenticação"},
+        responses = {
+            @ApiResponse(description = "Created", responseCode = "201", content =
+                @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class)
+            )),
+            @ApiResponse(description = "Bad Request", responseCode = "400",  content =
+                @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
+            )),
+            @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+        ))
+    })
+    @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
     public ResponseEntity<UsuarioDTO> create(@RequestBody CreateUsuarioDTO usuario){
         Usuario novoUsuario = new Usuario();
         novoUsuario.setEmail(usuario.getEmail());
@@ -43,9 +63,23 @@ public class UsuarioController {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoUsuario.getId()).toUri();
         return ResponseEntity.created(location).body(usuarioDTO);
     }
-    
+
+    @Operation(summary = "Login de usuário",
+            description = "Faz o login de um usuário conforme as informações passadas no formato JSON",
+            tags = {"Autenticação"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @PostMapping(value = "/login")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody Usuario authRequest) { 
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody LoginDTO authRequest) {
     	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())); 
         if (authentication.isAuthenticated()) { 
             String token = jwtComponent.generateToken(authRequest.getEmail());
@@ -53,8 +87,19 @@ public class UsuarioController {
         }else { 
             throw new UsernameNotFoundException("Solicitação de usuário inválida!"); 
         }
-    } 
-    
+    }
+
+    @Operation(summary = "Recupera um usuário de acordo com o seu ID",
+            description = "Faz a recuperação dos dados de um usuário conforme o ID passado na URL",
+            tags = {"Usuário"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @GetMapping(value = "/usuarios/{id}")
     public ResponseEntity<UsuarioDTO> getById(@PathVariable Integer id){
         Usuario usuarioEncontrado = service.getById(id);
@@ -62,12 +107,43 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioDTO);
     }
 
+    @Operation(summary = "Recupera todos os usuários",
+            description = "Faz a recuperação dos dados de todos os usuários cadastrados. (Somente ADMIN pode acessar essa rota)",
+            tags = {"Usuário"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class)
+                    )),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @GetMapping(value = "/usuarios")
     public ResponseEntity<List<UsuarioDTO>> getAll(){
         List<UsuarioDTO> usuariosEncontrados = service.getAll().stream().map(UsuarioDTO::new).toList();
         return ResponseEntity.ok(usuariosEncontrados);
     }
 
+    @Operation(summary = "Atualiza um usuário",
+            description = "Atualiza as informações de um usuário conforme o que foi passado no formato JSON",
+            tags = {"Usuário"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class)
+                    )),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @PutMapping(value = "/usuarios")
     public ResponseEntity<UsuarioDTO> update(@RequestBody Usuario usuario){
         Usuario usuarioAtualizado = service.update(usuario);
@@ -75,6 +151,21 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioDTO);
     }
 
+    @Operation(summary = "Atualiza um usuário",
+            description = "Atualiza as informações de um usuário conforme o que foi passado no formato JSON",
+            tags = {"Usuário"},
+            responses = {
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @DeleteMapping("/usuarios/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

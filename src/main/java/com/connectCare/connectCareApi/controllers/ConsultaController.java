@@ -45,9 +45,8 @@ public class ConsultaController {
                 @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                 ))
-    })    
-
-    @PostMapping
+    })
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Consulta> create(@RequestBody CreateConsultaDTO consulta){
         Consulta novaConsulta = new Consulta();
         Medico idMedico = new Medico();
@@ -87,8 +86,7 @@ public class ConsultaController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-    
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Consulta> getById(@PathVariable Integer id){
         Consulta consultaEncontrada = service.getById(id);
         return ResponseEntity.ok(consultaEncontrada);
@@ -111,8 +109,7 @@ public class ConsultaController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-
-    @GetMapping(value = "/paciente/{id}")
+    @GetMapping(value = "/paciente/{id}", produces = "application/json")
     public ResponseEntity<List<Consulta>> getByPacienteId(@PathVariable Integer id){
         List<Consulta> consultasEncontradas = service.getByPacienteId(id);
         return ResponseEntity.ok(consultasEncontradas);
@@ -135,8 +132,7 @@ public class ConsultaController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-    
-    @GetMapping(value = "/paciente/{id}/data")
+    @GetMapping(value = "/paciente/{id}/data", produces = "application/json")
     public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
         List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, intervalo);
         return ResponseEntity.ok(consultasEncontradas);
@@ -159,8 +155,7 @@ public class ConsultaController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-    
-    @GetMapping(value = "/medico/{id}")
+    @GetMapping(value = "/medico/{id}", produces = "application/json")
     public ResponseEntity<List<Consulta>> getByMedicoId(@PathVariable Integer id){
         List<Consulta> consultasEncontradas = service.getByMedicoId(id);
         return ResponseEntity.ok(consultasEncontradas);
@@ -183,15 +178,14 @@ public class ConsultaController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Consulta>> getAll(){
         List<Consulta> consultasEncontradas = service.getAll();
         return ResponseEntity.ok(consultasEncontradas);
     }
 
     @Operation(summary = "Atualiza uma consulta",
-            description = "Atualiza as informações de uma consulta conforme o que foi passado no formato JSON",
+            description = "Atualiza as informações de uma consulta conforme o que foi passado no formato JSON.",
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
@@ -207,8 +201,7 @@ public class ConsultaController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
-    
-    @PutMapping
+    @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Consulta> update(@RequestBody Consulta consulta){
         Consulta consultaAtualizada = service.update(consulta);
         return ResponseEntity.ok(consultaAtualizada);
@@ -230,7 +223,6 @@ public class ConsultaController {
                     ))
                     
     })
-    
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

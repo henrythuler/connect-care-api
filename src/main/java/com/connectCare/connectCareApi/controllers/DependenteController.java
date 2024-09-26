@@ -43,8 +43,7 @@ public class DependenteController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                 ))
     })
-    
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Dependente> create(@RequestBody CreateDependenteDTO dependente){
         Dependente novoDependente = new Dependente();
         Paciente pacienteResponsavel = new Paciente();
@@ -76,8 +75,7 @@ public class DependenteController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-    
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Dependente> getById(@PathVariable Integer id){
         Dependente dependenteEncontrado = service.getById(id);
         return ResponseEntity.ok(dependenteEncontrado);
@@ -101,7 +99,7 @@ public class DependenteController {
 	                ))
     })
 
-    @GetMapping(value = "/responsavel/{id}")
+    @GetMapping(value = "/responsavel/{id}", produces = "application/json")
     public ResponseEntity<List<Dependente>> getByResponsavelId(@PathVariable Integer id){
         List<Dependente> dependentesEncontrados = service.getByResponsavelId(id);
         return ResponseEntity.ok(dependentesEncontrados);
@@ -124,15 +122,14 @@ public class DependenteController {
                     	@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-    
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Dependente>> getAll(){
         List<Dependente> dependentesEncontrados = service.getAll();
         return ResponseEntity.ok(dependentesEncontrados);
     }
     
     @Operation(summary = "Atualiza um dependente",
-            description = "Atualiza as informações de um dependente conforme o que foi passado no formato JSON",
+            description = "Atualiza as informações de um dependente conforme o que foi passado no formato JSON.",
             tags = {"Dependentes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
@@ -148,8 +145,7 @@ public class DependenteController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
-
-    @PutMapping
+    @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Dependente> update(@RequestBody Dependente dependente){
         Dependente dependenteAtualizado = service.update(dependente);
         return ResponseEntity.ok(dependenteAtualizado);
@@ -171,7 +167,6 @@ public class DependenteController {
                     ))
                     
     })
-
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

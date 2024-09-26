@@ -66,7 +66,7 @@ public class OpenAPIConfig {
         tag8.setDescription("Todas as rotas referentes às consultas");
 
         Tag tag9 = new Tag();
-        tag9.setName("Usuário");
+        tag9.setName("Usuários");
         tag9.setDescription("Rotas referentes à listagem, atualização e deleção de usuários");
 
         return Arrays.asList(tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9);

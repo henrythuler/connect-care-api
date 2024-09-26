@@ -30,7 +30,7 @@ public class DisponibilidadeController {
     private DisponibilidadeServiceImpl service;
     
     @Operation(summary = "Cadastra uma nova Disponibilidade",
-            description = "Cadastra uma nova Disponibilidade de acordo com as informações passadas no formato JSON",
+            description = "Cadastra uma nova Disponibilidade de acordo com as informações passadas no formato JSON.",
             tags = {"Disponibilidades"},
             responses = {
                 @ApiResponse(description = "Created", responseCode = "201", content =
@@ -45,9 +45,8 @@ public class DisponibilidadeController {
                 @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                 ))
-        })
-
-    @PostMapping
+    })
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Disponibilidade> create(@RequestBody CreateDisponibilidadeDTO disponibilidade){
         Disponibilidade novaDisponibilidade = new Disponibilidade();
         Medico idMedico = new Medico();
@@ -79,8 +78,7 @@ public class DisponibilidadeController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Disponibilidade> getById(@PathVariable Integer id){
         Disponibilidade disponibilidadeEncontrado = service.getById(id);
         return ResponseEntity.ok(disponibilidadeEncontrado);
@@ -103,8 +101,7 @@ public class DisponibilidadeController {
                     	@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-
-    @GetMapping(value = "/medico/{id}")
+    @GetMapping(value = "/medico/{id}", produces = "application/json")
     public ResponseEntity<List<Disponibilidade>> getByMedicoId(@PathVariable Integer id){
         List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoId(id);
         return ResponseEntity.ok(disponibilidadesEncontradas);
@@ -127,8 +124,7 @@ public class DisponibilidadeController {
                     	@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-
-    @GetMapping(value = "/medico/{id}/data")
+    @GetMapping(value = "/medico/{id}/data", produces = "application/json")
     public ResponseEntity<List<Disponibilidade>> getByMedicoIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
         List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoIdData(id, intervalo);
         return ResponseEntity.ok(disponibilidadesEncontradas);
@@ -151,8 +147,7 @@ public class DisponibilidadeController {
                     	@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Disponibilidade>> getAll(){
         List<Disponibilidade> disponibilidadesEncontrados = service.getAll();
         System.out.println(UsuarioAutenticado.getUsuarioAutenticado().getId());
@@ -160,7 +155,7 @@ public class DisponibilidadeController {
     }
     
     @Operation(summary = "Atualiza uma disponibilidade",
-            description = "Atualiza as informações de uma disponibilidade conforme o que foi passado no formato JSON",
+            description = "Atualiza as informações de uma disponibilidade conforme o que foi passado no formato JSON.",
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
@@ -176,15 +171,14 @@ public class DisponibilidadeController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
-
-    @PutMapping
+    @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Disponibilidade> update(@RequestBody Disponibilidade disponibilidade){
         Disponibilidade disponibilidadeAtualizado = service.update(disponibilidade);
         return ResponseEntity.ok(disponibilidadeAtualizado);
     }
 
     @Operation(summary = "Remove uma disponibilidade de acordo com o seu ID",
-            description = "Remove as informações de uma disponibilidade conforme o ID passado na URL",
+            description = "Remove as informações de uma disponibilidade conforme o ID passado na URL.",
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
@@ -199,7 +193,6 @@ public class DisponibilidadeController {
                     ))
                     
     })
-    
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

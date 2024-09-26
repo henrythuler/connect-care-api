@@ -2,12 +2,10 @@ package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.entities.Especialidade;
 import com.connectCare.connectCareApi.services.impl.EspecialidadeServiceImpl;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +38,7 @@ public class EspecialidadeController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                 ))
     })
-
-    @PostMapping
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Especialidade> create(@RequestBody Especialidade especialidade){
         Especialidade novaEspecialidade = service.create(especialidade);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novaEspecialidade.getId()).toUri();
@@ -65,8 +62,7 @@ public class EspecialidadeController {
 	                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
 	                ))
     })
-
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Especialidade> getById(@PathVariable Integer id){
         Especialidade especialidadeEncontrada = service.getById(id);
         return ResponseEntity.ok(especialidadeEncontrada);
@@ -89,8 +85,7 @@ public class EspecialidadeController {
                     	@Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Especialidade>> getAll(){
         List<Especialidade> especialidadesEncontradas = service.getAll();
         return ResponseEntity.ok(especialidadesEncontradas);
@@ -113,8 +108,7 @@ public class EspecialidadeController {
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
                     ))
     })
-
-    @PutMapping
+    @PutMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<Especialidade> update(@RequestBody Especialidade especialidade){
         Especialidade especialidadeAtualizada = service.update(especialidade);
         return ResponseEntity.ok(especialidadeAtualizada);
@@ -136,7 +130,6 @@ public class EspecialidadeController {
                     ))
                     
     })
-    
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

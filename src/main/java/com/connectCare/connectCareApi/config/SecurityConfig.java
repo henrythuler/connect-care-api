@@ -25,7 +25,6 @@ import com.connectCare.connectCareApi.services.impl.UsuarioServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 	
 	private final JwtAuthFilter authFilter; 
@@ -43,6 +42,9 @@ public class SecurityConfig {
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers(HttpMethod.POST, "/api/v1/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
+                .requestMatchers("/swagger-ui/**",
+                        "/swagger-resources/*",
+                        "/api-docs/**").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())

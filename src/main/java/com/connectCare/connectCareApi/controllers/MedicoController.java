@@ -5,7 +5,10 @@ import com.connectCare.connectCareApi.models.entities.Especialidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.MedicoServiceImpl;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +25,27 @@ public class MedicoController {
     @Autowired
     private MedicoServiceImpl service;
 
-    @PostMapping
+    @Operation(summary = "Cadastra um novo médico",
+            description = "Cadastra um novo médico de acordo com as informações passadas no formato JSON.",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "Created", responseCode = "201", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                    )),
+                    @ApiResponse(description = "Bad Request", responseCode = "400",  content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
+                    )),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404",  content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Medico> create(@RequestBody CreateMedicoDTO medico){
         Medico novoMedico = new Medico();
         Usuario idUsuario = new Usuario();
@@ -42,30 +65,98 @@ public class MedicoController {
         return ResponseEntity.created(location).body(novoMedico);
     }
 
-    @GetMapping(value = "/{id}")
+    @Operation(summary = "Recupera um médico de acordo com o seu ID",
+            description = "Faz a recuperação dos dados de um médico conforme o ID passado na URL.",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Medico> getById(@PathVariable Integer id){
         Medico medicoEncontrado = service.getById(id);
         return ResponseEntity.ok(medicoEncontrado);
     }
 
-    @GetMapping(value = "/especialidade/{id}")
+    @Operation(summary = "Recupera os médicos de acordo com o ID da especialidade",
+            description = "Faz a recuperação dos dados dos médicos conforme o ID da especialidade passado na URL.",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
+    @GetMapping(value = "/especialidade/{id}", produces = "application/json")
     public ResponseEntity<List<Medico>> getByEspecialidadeId(@PathVariable Integer id){
         List<Medico> medicosEncontrados = service.getByEspecialidadeId(id);
         return ResponseEntity.ok(medicosEncontrados);
     }
 
-    @GetMapping
+    @Operation(summary = "Recupera todos os médicos",
+            description = "Faz a recuperação dos dados de todos os médicos cadastrados. (Somente ADMIN pode acessar essa rota)",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                    )),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Medico>> getAll(){
         List<Medico> medicosEncontrados = service.getAll();
         return ResponseEntity.ok(medicosEncontrados);
     }
 
-    @PutMapping
+    @Operation(summary = "Atualiza um médico",
+            description = "Atualiza as informações de um médico conforme o que foi passado no formato JSON.",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                    )),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
+    @PutMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Medico> update(@RequestBody Medico medico){
         Medico medicoAtualizado = service.update(medico);
         return ResponseEntity.ok(medicoAtualizado);
     }
 
+    @Operation(summary = "Remove um médico",
+            description = "Remove as informações de um médico conforme o ID passado na URL.",
+            tags = {"Médicos"},
+            responses = {
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+                    )),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content =
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
+            ))
+    })
     @DeleteMapping("/del/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id){
         service.delete(id);

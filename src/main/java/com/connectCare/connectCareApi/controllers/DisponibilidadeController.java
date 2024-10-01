@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class DisponibilidadeController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Disponibilidade> create(@RequestBody CreateDisponibilidadeDTO disponibilidade){
+    public ResponseEntity<Disponibilidade> create(@RequestBody @Valid CreateDisponibilidadeDTO disponibilidade){
         Disponibilidade novaDisponibilidade = new Disponibilidade();
         Medico idMedico = new Medico();
         idMedico.setId(disponibilidade.getIdMedico());
@@ -125,7 +126,7 @@ public class DisponibilidadeController {
                     ))
     })
     @GetMapping(value = "/medico/{id}/data", produces = "application/json")
-    public ResponseEntity<List<Disponibilidade>> getByMedicoIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
+    public ResponseEntity<List<Disponibilidade>> getByMedicoIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
         List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoIdData(id, intervalo);
         return ResponseEntity.ok(disponibilidadesEncontradas);
     }

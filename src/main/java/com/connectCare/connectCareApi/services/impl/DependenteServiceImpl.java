@@ -44,7 +44,7 @@ public class DependenteServiceImpl implements GenericService<Dependente> {
 
             return repository.save(dependente);
 		} catch (DataIntegrityViolationException e){
-            throw new OperacaoBancoDeDadosException("Campo CPF já cadastrado!");
+            throw new OperacaoBancoDeDadosException("Dependente já cadastrado!");
 		}
         
     }

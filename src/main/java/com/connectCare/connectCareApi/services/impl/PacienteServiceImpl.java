@@ -40,7 +40,7 @@ public class PacienteServiceImpl implements GenericService<Paciente> {
             paciente.setUsuario(usuarioEncontrado);
             return repository.save(paciente);
 		} catch (DataIntegrityViolationException e){
-            throw new OperacaoBancoDeDadosException("Campo CPF já cadastrado!");
+            throw new OperacaoBancoDeDadosException("Paciente já cadastrado!");
 		}
         
     }

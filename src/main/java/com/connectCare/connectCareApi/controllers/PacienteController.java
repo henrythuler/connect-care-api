@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreatePacienteDTO;
+import com.connectCare.connectCareApi.models.dtos.GetPacienteDTO;
 import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.PacienteServiceImpl;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ public class PacienteController {
             tags = {"Pacientes"},
             responses = {
                     @ApiResponse(description = "Created", responseCode = "201", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Paciente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPacienteDTO.class)
                     )),
                     @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -45,7 +47,7 @@ public class PacienteController {
             ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Paciente> create(@RequestBody CreatePacienteDTO paciente){
+    public ResponseEntity<GetPacienteDTO> create(@RequestBody @Valid CreatePacienteDTO paciente){
         Paciente novoPaciente = new Paciente();
         Usuario idUsuario = new Usuario();
         idUsuario.setId(paciente.getIdUsuario());
@@ -57,7 +59,7 @@ public class PacienteController {
         novoPaciente = service.create(novoPaciente);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoPaciente.getId()).toUri();
-        return ResponseEntity.created(location).body(novoPaciente);
+        return ResponseEntity.created(location).body(new GetPacienteDTO(novoPaciente));
     }
 
     @Operation(summary = "Recupera um paciente de acordo com o seu ID",
@@ -65,16 +67,17 @@ public class PacienteController {
             tags = {"Pacientes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Paciente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPacienteDTO.class)
                     )),
                     @ApiResponse(description = "Not Found", responseCode = "404", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Paciente> getById(@PathVariable Integer id){
+    public ResponseEntity<GetPacienteDTO> getById(@PathVariable Integer id){
         Paciente pacienteEncontrado = service.getById(id);
-        return ResponseEntity.ok(pacienteEncontrado);
+        GetPacienteDTO pacienteDTO = new GetPacienteDTO(pacienteEncontrado);
+        return ResponseEntity.ok(pacienteDTO);
     }
 
     @Operation(summary = "Recupera todos os pacientes",
@@ -82,7 +85,7 @@ public class PacienteController {
             tags = {"Pacientes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Paciente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPacienteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -92,9 +95,10 @@ public class PacienteController {
             ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Paciente>> getAll(){
+    public ResponseEntity<List<GetPacienteDTO>> getAll(){
         List<Paciente> pacientesEncontrados = service.getAll();
-        return ResponseEntity.ok(pacientesEncontrados);
+        List<GetPacienteDTO> pacienteDTOS = pacientesEncontrados.stream().map(GetPacienteDTO::new).toList();
+        return ResponseEntity.ok(pacienteDTOS);
     }
 
     @Operation(summary = "Atualiza um paciente",
@@ -102,7 +106,7 @@ public class PacienteController {
             tags = {"Pacientes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Paciente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPacienteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -115,9 +119,10 @@ public class PacienteController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Paciente> update(@RequestBody Paciente paciente){
+    public ResponseEntity<GetPacienteDTO> update(@RequestBody Paciente paciente){
         Paciente pacienteAtualizado = service.update(paciente);
-        return ResponseEntity.ok(pacienteAtualizado);
+        GetPacienteDTO pacienteDTO = new GetPacienteDTO(pacienteAtualizado);
+        return ResponseEntity.ok(pacienteDTO);
     }
 
     @Operation(summary = "Remove um paciente",

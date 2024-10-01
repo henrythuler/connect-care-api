@@ -9,7 +9,7 @@ public class CreateUsuarioDTO {
 	private String email;
 
 	@NotNull(message = "Password é obrigatória!")
-	@Size(min = 6, max = 24, message = "Password deve conter entre 2 e 24 caracteres")
+	@Size(min = 6, max = 24, message = "Password deve conter entre 6 e 24 caracteres")
 	private String password;
 
 	@NotNull(message = "Role é obrigatória! (Paciente ou Médico)")

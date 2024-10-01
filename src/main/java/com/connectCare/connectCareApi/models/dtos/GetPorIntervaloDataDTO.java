@@ -1,11 +1,16 @@
 package com.connectCare.connectCareApi.models.dtos;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class GetPorIntervaloDataDTO {
 
+    @NotNull(message = "Data de início é obrigatória!")
     LocalDate inicio;
+
+    @NotNull(message = "Data final é obrigatória!")
     LocalDate fim;
 
     public GetPorIntervaloDataDTO() {

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class PacienteController {
             ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Paciente> create(@RequestBody CreatePacienteDTO paciente){
+    public ResponseEntity<Paciente> create(@RequestBody @Valid CreatePacienteDTO paciente){
         Paciente novoPaciente = new Paciente();
         Usuario idUsuario = new Usuario();
         idUsuario.setId(paciente.getIdUsuario());

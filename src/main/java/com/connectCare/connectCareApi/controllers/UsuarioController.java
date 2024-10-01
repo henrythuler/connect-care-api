@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,7 +50,7 @@ public class UsuarioController {
         ))
     })
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<UsuarioDTO> create(@RequestBody CreateUsuarioDTO usuario){
+    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid CreateUsuarioDTO usuario){
         Usuario novoUsuario = new Usuario();
         novoUsuario.setEmail(usuario.getEmail());
         novoUsuario.setPassword(usuario.getPassword());
@@ -77,7 +78,7 @@ public class UsuarioController {
             ))
     })
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody LoginDTO authRequest) {
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody @Valid LoginDTO authRequest) {
     	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())); 
         if (authentication.isAuthenticated()) { 
             String token = jwtComponent.generateToken(authRequest.getEmail());

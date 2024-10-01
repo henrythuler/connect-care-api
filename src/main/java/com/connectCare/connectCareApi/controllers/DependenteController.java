@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class DependenteController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Dependente> create(@RequestBody CreateDependenteDTO dependente){
+    public ResponseEntity<Dependente> create(@RequestBody @Valid CreateDependenteDTO dependente){
         Dependente novoDependente = new Dependente();
         Paciente pacienteResponsavel = new Paciente();
         pacienteResponsavel.setId(dependente.getIdResponsavel());

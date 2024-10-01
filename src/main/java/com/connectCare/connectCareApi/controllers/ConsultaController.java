@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class ConsultaController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Consulta> create(@RequestBody CreateConsultaDTO consulta){
+    public ResponseEntity<Consulta> create(@RequestBody @Valid CreateConsultaDTO consulta){
         Consulta novaConsulta = new Consulta();
         Medico idMedico = new Medico();
         idMedico.setId(consulta.getIdMedico());
@@ -133,7 +134,7 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(value = "/paciente/{id}/data", produces = "application/json")
-    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody GetPorIntervaloDataDTO intervalo){
+    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
         List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, intervalo);
         return ResponseEntity.ok(consultasEncontradas);
     }

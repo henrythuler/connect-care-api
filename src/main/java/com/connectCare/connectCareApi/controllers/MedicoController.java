@@ -32,7 +32,7 @@ public class MedicoController {
             tags = {"Médicos"},
             responses = {
                     @ApiResponse(description = "Created", responseCode = "201", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetMedicoDTO.class)
                     )),
                     @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -48,7 +48,7 @@ public class MedicoController {
             ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Medico> create(@RequestBody @Valid CreateMedicoDTO medico){
+    public ResponseEntity<GetMedicoDTO> create(@RequestBody @Valid CreateMedicoDTO medico){
         Medico novoMedico = new Medico();
         Usuario idUsuario = new Usuario();
 
@@ -64,7 +64,7 @@ public class MedicoController {
         novoMedico = service.create(novoMedico);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoMedico.getId()).toUri();
-        return ResponseEntity.created(location).body(novoMedico);
+        return ResponseEntity.created(location).body(new GetMedicoDTO(novoMedico));
     }
 
     @Operation(summary = "Recupera um médico de acordo com o seu ID",
@@ -142,9 +142,10 @@ public class MedicoController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Medico> update(@RequestBody Medico medico){
+    public ResponseEntity<GetMedicoDTO> update(@RequestBody Medico medico){
         Medico medicoAtualizado = service.update(medico);
-        return ResponseEntity.ok(medicoAtualizado);
+        GetMedicoDTO medicoDTO = new GetMedicoDTO(medicoAtualizado);
+        return ResponseEntity.ok(medicoDTO);
     }
 
     @Operation(summary = "Remove um médico",

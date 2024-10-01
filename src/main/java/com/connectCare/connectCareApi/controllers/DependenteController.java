@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateDependenteDTO;
+import com.connectCare.connectCareApi.models.dtos.GetDependenteDTO;
 import com.connectCare.connectCareApi.models.entities.Dependente;
 import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.services.impl.DependenteServiceImpl;
@@ -32,7 +33,7 @@ public class DependenteController {
             tags = {"Dependentes"},
             responses = {
                 @ApiResponse(description = "Created", responseCode = "201", content =
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Dependente.class)
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = GetDependenteDTO.class)
                 )),
                 @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                     @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -45,7 +46,7 @@ public class DependenteController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Dependente> create(@RequestBody @Valid CreateDependenteDTO dependente){
+    public ResponseEntity<GetDependenteDTO> create(@RequestBody @Valid CreateDependenteDTO dependente){
         Dependente novoDependente = new Dependente();
         Paciente pacienteResponsavel = new Paciente();
         pacienteResponsavel.setId(dependente.getIdResponsavel());
@@ -56,7 +57,7 @@ public class DependenteController {
         novoDependente = service.create(novoDependente);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoDependente.getId()).toUri();
-        return ResponseEntity.created(location).body(novoDependente);
+        return ResponseEntity.created(location).body(new GetDependenteDTO(novoDependente));
     }
 
     @Operation(summary = "Recupera um dependente de acordo com o seu ID",
@@ -64,7 +65,7 @@ public class DependenteController {
             tags = {"Dependentes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Dependente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDependenteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -77,9 +78,10 @@ public class DependenteController {
 	                ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Dependente> getById(@PathVariable Integer id){
+    public ResponseEntity<GetDependenteDTO> getById(@PathVariable Integer id){
         Dependente dependenteEncontrado = service.getById(id);
-        return ResponseEntity.ok(dependenteEncontrado);
+        GetDependenteDTO dependenteDTO = new GetDependenteDTO(dependenteEncontrado);
+        return ResponseEntity.ok(dependenteDTO);
     }
     
     @Operation(summary = "Recupera todos os dependente de acordo com o ID do responsavel",
@@ -87,7 +89,7 @@ public class DependenteController {
             tags = {"Dependentes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Dependente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDependenteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -101,9 +103,10 @@ public class DependenteController {
     })
 
     @GetMapping(value = "/responsavel/{id}", produces = "application/json")
-    public ResponseEntity<List<Dependente>> getByResponsavelId(@PathVariable Integer id){
+    public ResponseEntity<List<GetDependenteDTO>> getByResponsavelId(@PathVariable Integer id){
         List<Dependente> dependentesEncontrados = service.getByResponsavelId(id);
-        return ResponseEntity.ok(dependentesEncontrados);
+        List<GetDependenteDTO> dependenteDTOS = dependentesEncontrados.stream().map(GetDependenteDTO::new).toList();
+        return ResponseEntity.ok(dependenteDTOS);
     }
 
     @Operation(summary = "Recupera todos os dependentes",
@@ -111,7 +114,7 @@ public class DependenteController {
             tags = {"Dependentes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Dependente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDependenteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -124,9 +127,10 @@ public class DependenteController {
                     ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Dependente>> getAll(){
+    public ResponseEntity<List<GetDependenteDTO>> getAll(){
         List<Dependente> dependentesEncontrados = service.getAll();
-        return ResponseEntity.ok(dependentesEncontrados);
+        List<GetDependenteDTO> dependenteDTOS = dependentesEncontrados.stream().map(GetDependenteDTO::new).toList();
+        return ResponseEntity.ok(dependenteDTOS);
     }
     
     @Operation(summary = "Atualiza um dependente",
@@ -134,7 +138,7 @@ public class DependenteController {
             tags = {"Dependentes"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Dependente.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDependenteDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -147,9 +151,10 @@ public class DependenteController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Dependente> update(@RequestBody Dependente dependente){
+    public ResponseEntity<GetDependenteDTO> update(@RequestBody Dependente dependente){
         Dependente dependenteAtualizado = service.update(dependente);
-        return ResponseEntity.ok(dependenteAtualizado);
+        GetDependenteDTO dependenteDTO = new GetDependenteDTO(dependenteAtualizado);
+        return ResponseEntity.ok(dependenteDTO);
     }
     
     @Operation(summary = "Remove um dependente de acordo com o seu ID",

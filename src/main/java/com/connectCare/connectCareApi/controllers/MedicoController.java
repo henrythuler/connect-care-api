@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateMedicoDTO;
+import com.connectCare.connectCareApi.models.dtos.GetMedicoDTO;
 import com.connectCare.connectCareApi.models.entities.Especialidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
 import com.connectCare.connectCareApi.models.entities.Usuario;
@@ -71,16 +72,17 @@ public class MedicoController {
             tags = {"Médicos"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetMedicoDTO.class)
                     )),
                     @ApiResponse(description = "Not Found", responseCode = "404", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Medico> getById(@PathVariable Integer id){
+    public ResponseEntity<GetMedicoDTO> getById(@PathVariable Integer id){
         Medico medicoEncontrado = service.getById(id);
-        return ResponseEntity.ok(medicoEncontrado);
+        GetMedicoDTO medicoDTO = new GetMedicoDTO(medicoEncontrado);
+        return ResponseEntity.ok(medicoDTO);
     }
 
     @Operation(summary = "Recupera os médicos de acordo com o ID da especialidade",
@@ -88,16 +90,17 @@ public class MedicoController {
             tags = {"Médicos"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetMedicoDTO.class)
                     )),
                     @ApiResponse(description = "Not Found", responseCode = "404", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
     @GetMapping(value = "/especialidade/{id}", produces = "application/json")
-    public ResponseEntity<List<Medico>> getByEspecialidadeId(@PathVariable Integer id){
+    public ResponseEntity<List<GetMedicoDTO>> getByEspecialidadeId(@PathVariable Integer id){
         List<Medico> medicosEncontrados = service.getByEspecialidadeId(id);
-        return ResponseEntity.ok(medicosEncontrados);
+        List<GetMedicoDTO> medicoDTOS = medicosEncontrados.stream().map(GetMedicoDTO::new).toList();
+        return ResponseEntity.ok(medicoDTOS);
     }
 
     @Operation(summary = "Recupera todos os médicos",
@@ -105,7 +108,7 @@ public class MedicoController {
             tags = {"Médicos"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetMedicoDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -115,9 +118,10 @@ public class MedicoController {
             ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Medico>> getAll(){
+    public ResponseEntity<List<GetMedicoDTO>> getAll(){
         List<Medico> medicosEncontrados = service.getAll();
-        return ResponseEntity.ok(medicosEncontrados);
+        List<GetMedicoDTO> medicoDTOS = medicosEncontrados.stream().map(GetMedicoDTO::new).toList();
+        return ResponseEntity.ok(medicoDTOS);
     }
 
     @Operation(summary = "Atualiza um médico",
@@ -125,7 +129,7 @@ public class MedicoController {
             tags = {"Médicos"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Medico.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetMedicoDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)

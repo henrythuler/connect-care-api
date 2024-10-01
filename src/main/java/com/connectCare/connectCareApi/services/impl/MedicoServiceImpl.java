@@ -50,7 +50,7 @@ public class MedicoServiceImpl implements GenericService<Medico> {
 
 			return repository.save(medico);
 		} catch (DataIntegrityViolationException e){
-            throw new OperacaoBancoDeDadosException("Campo CRM já cadastrado!");
+            throw new OperacaoBancoDeDadosException("Médico já cadastrado!");
 		}
 		
 	}

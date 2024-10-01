@@ -16,9 +16,8 @@ public class CreateMedicoDTO {
 	
 	@NotNull(message = "Data de Nascimento é obrigatória!")
     private Date dataNascimento;
-	
-	@NotBlank(message = "Gênero é obrigatório!")
-    @Size(min = 1, max = 1, message = "Escreva F para Feminimo ou M para Masculino")
+
+    @NotNull(message = "Gênero é obrigatório! Escreva F para Feminimo ou M para Masculino")
     private char genero; //F - Feminino | M - Masculino
 	
 	@NotNull(message = "Endereço é obrigatório!")

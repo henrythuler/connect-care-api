@@ -3,7 +3,9 @@ package com.connectCare.connectCareApi.controllers;
 import com.connectCare.connectCareApi.components.JwtComponent;
 import com.connectCare.connectCareApi.models.dtos.CreateUsuarioDTO;
 import com.connectCare.connectCareApi.models.dtos.LoginDTO;
+import com.connectCare.connectCareApi.models.dtos.TokenDTO;
 import com.connectCare.connectCareApi.models.dtos.UsuarioDTO;
+import com.connectCare.connectCareApi.models.entities.UserInfoDetails;
 import com.connectCare.connectCareApi.models.entities.Usuario;
 import com.connectCare.connectCareApi.services.impl.UsuarioServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -78,11 +84,14 @@ public class UsuarioController {
             ))
     })
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody @Valid LoginDTO authRequest) {
+    public ResponseEntity<TokenDTO> authenticateAndGetToken(@RequestBody @Valid LoginDTO authRequest) {
     	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())); 
         if (authentication.isAuthenticated()) { 
             String token = jwtComponent.generateToken(authRequest.getEmail());
-            return ResponseEntity.ok(token); 
+            LocalDateTime expiracao = LocalDateTime.ofInstant(jwtComponent.extractExpiration(token).toInstant(), ZoneId.systemDefault());
+            UserInfoDetails userInfoDetails = (UserInfoDetails) authentication.getPrincipal();
+            Integer id = userInfoDetails.getId();
+            return ResponseEntity.ok(new TokenDTO(token, expiracao, id));
         }else { 
             throw new UsernameNotFoundException("Solicitação de usuário inválida!"); 
         }

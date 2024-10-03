@@ -8,15 +8,15 @@ public class CreatePlanoSaudeDTO {
 	private Integer id;
 	
 	@NotNull(message = "Convenio é obrigatório!")
-    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
+    @Size(min = 2, max = 255, message = "Convenio deve possuir entre 2 a 255 caracteres!")
     private String convenio;
 	
 	@NotNull(message = "Plano é obrigatório!")
-    @Size(min = 2, max = 255, message = "Nome deve possuir entre 2 a 255 caracteres!")
+    @Size(min = 2, max = 255, message = "Plano deve possuir entre 2 a 255 caracteres!")
     private String plano;
 	
-	@NotNull(message = "Numero da Cartarinha é obrigatório!")
-    @Size(min = 8, max = 16, message = "Nome deve possuir entre 8 a 16 caracteres!")
+	@NotNull(message = "Numero da Carteirinha é obrigatório!")
+    @Size(min = 8, max = 16, message = "Número da Carteirinha deve possuir entre 8 a 16 caracteres!")
     private String numCarteirinha;
 	
 	@NotNull(message = "Paciente é obrigatório!")

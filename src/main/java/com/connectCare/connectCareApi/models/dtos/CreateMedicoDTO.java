@@ -17,8 +17,9 @@ public class CreateMedicoDTO {
 	@NotNull(message = "Data de Nascimento é obrigatória!")
     private Date dataNascimento;
 
-    @NotNull(message = "Gênero é obrigatório! Escreva F para Feminimo ou M para Masculino")
-    private char genero; //F - Feminino | M - Masculino
+	@NotNull(message = "Gênero é obrigatório!")
+    @Size(min = 1, max = 1, message = "Escreva F para Feminino ou M para Masculino")
+    private String genero; //F - Feminino | M - Masculino
 	
 	@NotNull(message = "Endereço é obrigatório!")
 	@Size(min = 2, max = 255, message = "Endereço deve possuir entre 2 a 255 caracteres!")
@@ -50,7 +51,7 @@ public class CreateMedicoDTO {
     public CreateMedicoDTO() {
     }
 
-    public CreateMedicoDTO(String nome, Date dataNascimento, char genero, String endereco, String telefone, String crm, BigDecimal valorDaConsulta, boolean presencial, boolean teleconsulta, Integer idUsuario, Integer idEspecialidade) {
+    public CreateMedicoDTO(String nome, Date dataNascimento, String genero, String endereco, String telefone, String crm, BigDecimal valorDaConsulta, boolean presencial, boolean teleconsulta, Integer idUsuario, Integer idEspecialidade) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.genero = genero;
@@ -80,11 +81,11 @@ public class CreateMedicoDTO {
         this.dataNascimento = dataNascimento;
     }
 
-    public char getGenero() {
+    public String getGenero() {
         return genero;
     }
 
-    public void setGenero(char genero) {
+    public void setGenero(String genero) {
         this.genero = genero;
     }
 

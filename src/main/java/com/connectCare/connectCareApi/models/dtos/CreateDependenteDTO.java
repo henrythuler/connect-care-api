@@ -16,8 +16,9 @@ public class CreateDependenteDTO {
 	@NotNull(message = "Data de Nascimento é obrigatória!")
     private Date dataNascimento;
 
-    @NotNull(message = "Gênero é obrigatório! Escreva F para Feminimo ou M para Masculino")
-    private char genero; //F - Feminino | M - Masculino
+	@NotNull(message = "Gênero é obrigatório!")
+    @Size(min = 1, max = 1, message = "Escreva F para Feminino ou M para Masculino")
+    private String genero; //F - Feminino | M - Masculino
 	
 	@NotNull(message = "Endereço é obrigatório!")
     @Size(min = 2, max = 255, message = "Endereço deve possuir entre 2 a 255 caracteres!")
@@ -37,7 +38,7 @@ public class CreateDependenteDTO {
     public CreateDependenteDTO() {
     }
 
-    public CreateDependenteDTO(String nome, Date dataNascimento, char genero, String endereco, String telefone, String cpf, Integer idResponsavel) {
+    public CreateDependenteDTO(String nome, Date dataNascimento, String genero, String endereco, String telefone, String cpf, Integer idResponsavel) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.genero = genero;
@@ -63,11 +64,11 @@ public class CreateDependenteDTO {
         this.dataNascimento = dataNascimento;
     }
 
-    public char getGenero() {
+    public String getGenero() {
         return genero;
     }
 
-    public void setGenero(char genero) {
+    public void setGenero(String genero) {
         this.genero = genero;
     }
 

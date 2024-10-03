@@ -54,6 +54,8 @@ public class PacienteController {
 
         BeanUtils.copyProperties(paciente, novoPaciente);
 
+        novoPaciente.setGenero(paciente.getGenero().charAt(0));
+
         novoPaciente.setUsuario(idUsuario);
 
         novoPaciente = service.create(novoPaciente);

@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateDisponibilidadeDTO;
+import com.connectCare.connectCareApi.models.dtos.GetDisponibilidadeDTO;
 import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
 import com.connectCare.connectCareApi.models.entities.Medico;
@@ -35,7 +36,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                 @ApiResponse(description = "Created", responseCode = "201", content =
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Disponibilidade.class)
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                 )),
                 @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                     @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -48,7 +49,7 @@ public class DisponibilidadeController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Disponibilidade> create(@RequestBody @Valid CreateDisponibilidadeDTO disponibilidade){
+    public ResponseEntity<GetDisponibilidadeDTO> create(@RequestBody @Valid CreateDisponibilidadeDTO disponibilidade){
         Disponibilidade novaDisponibilidade = new Disponibilidade();
         Medico idMedico = new Medico();
         idMedico.setId(disponibilidade.getIdMedico());
@@ -59,7 +60,7 @@ public class DisponibilidadeController {
         novaDisponibilidade = service.create(novaDisponibilidade);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novaDisponibilidade.getId()).toUri();
-        return ResponseEntity.created(location).body(novaDisponibilidade);
+        return ResponseEntity.created(location).body(new GetDisponibilidadeDTO(novaDisponibilidade));
     }
     
     @Operation(summary = "Recupera uma disponibilidade de acordo com o seu ID",
@@ -67,7 +68,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Disponibilidade.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -80,9 +81,9 @@ public class DisponibilidadeController {
 	                ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Disponibilidade> getById(@PathVariable Integer id){
-        Disponibilidade disponibilidadeEncontrado = service.getById(id);
-        return ResponseEntity.ok(disponibilidadeEncontrado);
+    public ResponseEntity<GetDisponibilidadeDTO> getById(@PathVariable Integer id){
+        Disponibilidade disponibilidadeEncontrada = service.getById(id);
+        return ResponseEntity.ok(new GetDisponibilidadeDTO(disponibilidadeEncontrada));
     }
     
     @Operation(summary = "Recupera todos as disponibilidades de acordo com o ID do médico",
@@ -90,7 +91,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Disponibilidade.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -103,9 +104,10 @@ public class DisponibilidadeController {
                     ))
     })
     @GetMapping(value = "/medico/{id}", produces = "application/json")
-    public ResponseEntity<List<Disponibilidade>> getByMedicoId(@PathVariable Integer id){
+    public ResponseEntity<List<GetDisponibilidadeDTO>> getByMedicoId(@PathVariable Integer id){
         List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoId(id);
-        return ResponseEntity.ok(disponibilidadesEncontradas);
+        List<GetDisponibilidadeDTO> disponibilidadeDTOS = disponibilidadesEncontradas.stream().map(GetDisponibilidadeDTO::new).toList();
+        return ResponseEntity.ok(disponibilidadeDTOS);
     }
     
     @Operation(summary = "Recupera todos as disponibilidades de acordo com o ID do médico e data",
@@ -113,7 +115,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Disponibilidade.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -126,9 +128,10 @@ public class DisponibilidadeController {
                     ))
     })
     @GetMapping(value = "/medico/{id}/data", produces = "application/json")
-    public ResponseEntity<List<Disponibilidade>> getByMedicoIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
+    public ResponseEntity<List<GetDisponibilidadeDTO>> getByMedicoIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
         List<Disponibilidade> disponibilidadesEncontradas = service.getByMedicoIdData(id, intervalo);
-        return ResponseEntity.ok(disponibilidadesEncontradas);
+        List<GetDisponibilidadeDTO> disponibilidadeDTOS = disponibilidadesEncontradas.stream().map(GetDisponibilidadeDTO::new).toList();
+        return ResponseEntity.ok(disponibilidadeDTOS);
     }
     
     @Operation(summary = "Recupera todos as disponibilidades",
@@ -136,7 +139,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Disponibilidade.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -149,10 +152,10 @@ public class DisponibilidadeController {
                     ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Disponibilidade>> getAll(){
-        List<Disponibilidade> disponibilidadesEncontrados = service.getAll();
-        System.out.println(UsuarioAutenticado.getUsuarioAutenticado().getId());
-        return ResponseEntity.ok(disponibilidadesEncontrados);
+    public ResponseEntity<List<GetDisponibilidadeDTO>> getAll(){
+        List<Disponibilidade> disponibilidadesEncontradas = service.getAll();
+        List<GetDisponibilidadeDTO> disponibilidadeDTOS = disponibilidadesEncontradas.stream().map(GetDisponibilidadeDTO::new).toList();
+        return ResponseEntity.ok(disponibilidadeDTOS);
     }
     
     @Operation(summary = "Atualiza uma disponibilidade",
@@ -160,7 +163,7 @@ public class DisponibilidadeController {
             tags = {"Disponibilidades"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = CreateDisponibilidadeDTO.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetDisponibilidadeDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -173,9 +176,9 @@ public class DisponibilidadeController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Disponibilidade> update(@RequestBody Disponibilidade disponibilidade){
+    public ResponseEntity<GetDisponibilidadeDTO> update(@RequestBody Disponibilidade disponibilidade){
         Disponibilidade disponibilidadeAtualizado = service.update(disponibilidade);
-        return ResponseEntity.ok(disponibilidadeAtualizado);
+        return ResponseEntity.ok(new GetDisponibilidadeDTO(disponibilidadeAtualizado));
     }
 
     @Operation(summary = "Remove uma disponibilidade de acordo com o seu ID",

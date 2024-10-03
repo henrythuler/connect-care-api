@@ -20,7 +20,6 @@ public class Consulta {
 	private String formaAgendamento;
 	private String tipoConsulta;
 
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="id_medico")
 	private Medico medico;

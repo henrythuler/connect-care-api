@@ -57,6 +57,8 @@ public class MedicoController {
 
         idUsuario.setId(medico.getIdUsuario());
 
+        novoMedico.setGenero(medico.getGenero().charAt(0));
+
         BeanUtils.copyProperties(medico, novoMedico);
         novoMedico.setUsuario(idUsuario);
         novoMedico.setEspecialidade(idEspecialidade);

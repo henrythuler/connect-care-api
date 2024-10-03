@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreateConsultaDTO;
+import com.connectCare.connectCareApi.models.dtos.GetConsultaDTO;
 import com.connectCare.connectCareApi.models.dtos.GetPorIntervaloDataDTO;
 import com.connectCare.connectCareApi.models.entities.Consulta;
 import com.connectCare.connectCareApi.models.entities.Disponibilidade;
@@ -35,7 +36,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                 @ApiResponse(description = "Created", responseCode = "201", content =
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                 )),
                 @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                     @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -48,7 +49,7 @@ public class ConsultaController {
                 ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Consulta> create(@RequestBody @Valid CreateConsultaDTO consulta){
+    public ResponseEntity<GetConsultaDTO> create(@RequestBody @Valid CreateConsultaDTO consulta){
         Consulta novaConsulta = new Consulta();
         Medico idMedico = new Medico();
         idMedico.setId(consulta.getIdMedico());
@@ -67,7 +68,7 @@ public class ConsultaController {
         novaConsulta = service.create(novaConsulta);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novaConsulta.getId()).toUri();
-        return ResponseEntity.created(location).body(novaConsulta);
+        return ResponseEntity.created(location).body(new GetConsultaDTO(novaConsulta));
     }
 
     @Operation(summary = "Recupera uma consulta de acordo com o seu ID",
@@ -75,7 +76,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -88,9 +89,9 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Consulta> getById(@PathVariable Integer id){
+    public ResponseEntity<GetConsultaDTO> getById(@PathVariable Integer id){
         Consulta consultaEncontrada = service.getById(id);
-        return ResponseEntity.ok(consultaEncontrada);
+        return ResponseEntity.ok(new GetConsultaDTO(consultaEncontrada));
     }
     
     @Operation(summary = "Recupera todas as consultas de acordo com o ID do paciente",
@@ -98,7 +99,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -111,9 +112,10 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(value = "/paciente/{id}", produces = "application/json")
-    public ResponseEntity<List<Consulta>> getByPacienteId(@PathVariable Integer id){
+    public ResponseEntity<List<GetConsultaDTO>> getByPacienteId(@PathVariable Integer id){
         List<Consulta> consultasEncontradas = service.getByPacienteId(id);
-        return ResponseEntity.ok(consultasEncontradas);
+        List<GetConsultaDTO> consultaDTOs = consultasEncontradas.stream().map(GetConsultaDTO::new).toList();
+        return ResponseEntity.ok(consultaDTOs);
     }
     
     @Operation(summary = "Recupera uma consulta de acordo com o ID do paciente e a data",
@@ -121,7 +123,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -134,9 +136,10 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(value = "/paciente/{id}/data", produces = "application/json")
-    public ResponseEntity<List<Consulta>> getByPacienteIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
+    public ResponseEntity<List<GetConsultaDTO>> getByPacienteIdData(@PathVariable Integer id, @RequestBody @Valid GetPorIntervaloDataDTO intervalo){
         List<Consulta> consultasEncontradas = service.getByPacienteIdData(id, intervalo);
-        return ResponseEntity.ok(consultasEncontradas);
+        List<GetConsultaDTO> consultaDTOs = consultasEncontradas.stream().map(GetConsultaDTO::new).toList();
+        return ResponseEntity.ok(consultaDTOs);
     }
 
     @Operation(summary = "Recupera todas as consultas de acordo com o ID do médico",
@@ -144,7 +147,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -157,9 +160,10 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(value = "/medico/{id}", produces = "application/json")
-    public ResponseEntity<List<Consulta>> getByMedicoId(@PathVariable Integer id){
+    public ResponseEntity<List<GetConsultaDTO>> getByMedicoId(@PathVariable Integer id){
         List<Consulta> consultasEncontradas = service.getByMedicoId(id);
-        return ResponseEntity.ok(consultasEncontradas);
+        List<GetConsultaDTO> consultaDTOs = consultasEncontradas.stream().map(GetConsultaDTO::new).toList();
+        return ResponseEntity.ok(consultaDTOs);
     }
     
     @Operation(summary = "Recupera todas as consultas",
@@ -167,7 +171,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -180,9 +184,10 @@ public class ConsultaController {
 	                ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Consulta>> getAll(){
+    public ResponseEntity<List<GetConsultaDTO>> getAll(){
         List<Consulta> consultasEncontradas = service.getAll();
-        return ResponseEntity.ok(consultasEncontradas);
+        List<GetConsultaDTO> consultaDTOs = consultasEncontradas.stream().map(GetConsultaDTO::new).toList();
+        return ResponseEntity.ok(consultaDTOs);
     }
 
     @Operation(summary = "Atualiza uma consulta",
@@ -190,7 +195,7 @@ public class ConsultaController {
             tags = {"Consultas"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = Consulta.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetConsultaDTO.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -203,9 +208,9 @@ public class ConsultaController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Consulta> update(@RequestBody Consulta consulta){
+    public ResponseEntity<GetConsultaDTO> update(@RequestBody Consulta consulta){
         Consulta consultaAtualizada = service.update(consulta);
-        return ResponseEntity.ok(consultaAtualizada);
+        return ResponseEntity.ok(new GetConsultaDTO(consultaAtualizada));
     }
 
     @Operation(summary = "Remove uma consulta de acordo com o seu ID",

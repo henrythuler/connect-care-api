@@ -52,6 +52,7 @@ public class DependenteController {
         pacienteResponsavel.setId(dependente.getIdResponsavel());
 
         BeanUtils.copyProperties(dependente, novoDependente);
+        novoDependente.setGenero(dependente.getGenero().charAt(0));
         novoDependente.setResponsavel(pacienteResponsavel);
 
         novoDependente = service.create(novoDependente);

@@ -1,6 +1,7 @@
 package com.connectCare.connectCareApi.controllers;
 
 import com.connectCare.connectCareApi.models.dtos.CreatePlanoSaudeDTO;
+import com.connectCare.connectCareApi.models.dtos.GetPlanoSaude;
 import com.connectCare.connectCareApi.models.entities.Paciente;
 import com.connectCare.connectCareApi.models.entities.PlanoSaude;
 import com.connectCare.connectCareApi.services.impl.PlanoSaudeServiceImpl;
@@ -31,7 +32,7 @@ public class PlanoSaudeController {
             tags = {"Planos de Saúde"},
             responses = {
                     @ApiResponse(description = "Created", responseCode = "201", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = PlanoSaude.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPlanoSaude.class)
                     )),
                     @ApiResponse(description = "Bad Request", responseCode = "400",  content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = IllegalArgumentException.class)
@@ -47,7 +48,7 @@ public class PlanoSaudeController {
             ))
     })
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<PlanoSaude> create(@RequestBody @Valid CreatePlanoSaudeDTO planoSaude){
+    public ResponseEntity<GetPlanoSaude> create(@RequestBody @Valid CreatePlanoSaudeDTO planoSaude){
     	PlanoSaude novoPlanoSaude = new PlanoSaude();
     	Paciente idPaciente = new Paciente();
         idPaciente.setId(planoSaude.getIdPaciente());
@@ -57,7 +58,7 @@ public class PlanoSaudeController {
     	
         novoPlanoSaude = service.create(novoPlanoSaude);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(novoPlanoSaude.getId()).toUri();
-        return ResponseEntity.created(location).body(novoPlanoSaude);
+        return ResponseEntity.created(location).body(new GetPlanoSaude(novoPlanoSaude));
     }
 
     @Operation(summary = "Recupera um plano de saúde de acordo com o seu ID",
@@ -65,16 +66,16 @@ public class PlanoSaudeController {
             tags = {"Planos de Saúde"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = PlanoSaude.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPlanoSaude.class)
                     )),
                     @ApiResponse(description = "Not Found", responseCode = "404", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
             ))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<PlanoSaude> getById(@PathVariable Integer id){
+    public ResponseEntity<GetPlanoSaude> getById(@PathVariable Integer id){
         PlanoSaude planoSaudeEncontrado = service.getById(id);
-        return ResponseEntity.ok(planoSaudeEncontrado);
+        return ResponseEntity.ok(new GetPlanoSaude(planoSaudeEncontrado));
     }
 
     @Operation(summary = "Recupera um plano de saúde de acordo com o ID do paciente",
@@ -82,7 +83,7 @@ public class PlanoSaudeController {
             tags = {"Planos de Saúde"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = PlanoSaude.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPlanoSaude.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -92,9 +93,9 @@ public class PlanoSaudeController {
             ))
     })
     @GetMapping(value = "/paciente/{id}", produces = "application/json")
-    public ResponseEntity<PlanoSaude> getByPacienteId(@PathVariable Integer id){
+    public ResponseEntity<GetPlanoSaude> getByPacienteId(@PathVariable Integer id){
         PlanoSaude planoSaudeEncontrado = service.getByPacienteId(id);
-        return ResponseEntity.ok(planoSaudeEncontrado);
+        return ResponseEntity.ok(new GetPlanoSaude(planoSaudeEncontrado));
     }
 
     @Operation(summary = "Recupera todos os planos de saúde",
@@ -102,7 +103,7 @@ public class PlanoSaudeController {
             tags = {"Planos de Saúde"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = PlanoSaude.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPlanoSaude.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -112,9 +113,10 @@ public class PlanoSaudeController {
             ))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<PlanoSaude>> getAll(){
+    public ResponseEntity<List<GetPlanoSaude>> getAll(){
         List<PlanoSaude> planosSaudeEncontrados = service.getAll();
-        return ResponseEntity.ok(planosSaudeEncontrados);
+        List<GetPlanoSaude> planoSaudeDTOs = planosSaudeEncontrados.stream().map(GetPlanoSaude::new).toList();
+        return ResponseEntity.ok(planoSaudeDTOs);
     }
 
     @Operation(summary = "Atualiza um plano de saúde",
@@ -122,7 +124,7 @@ public class PlanoSaudeController {
             tags = {"Planos de Saúde"},
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200", content =
-                        @Content(mediaType = "application/json", schema = @Schema(implementation = PlanoSaude.class)
+                        @Content(mediaType = "application/json", schema = @Schema(implementation = GetPlanoSaude.class)
                     )),
                     @ApiResponse(description = "Unauthorized", responseCode = "401", content =
                         @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)
@@ -135,9 +137,9 @@ public class PlanoSaudeController {
             ))
     })
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<PlanoSaude> update(@RequestBody PlanoSaude planoSaude){
+    public ResponseEntity<GetPlanoSaude> update(@RequestBody PlanoSaude planoSaude){
         PlanoSaude planoSaudeAtualizado = service.update(planoSaude);
-        return ResponseEntity.ok(planoSaudeAtualizado);
+        return ResponseEntity.ok(new GetPlanoSaude(planoSaudeAtualizado));
     }
 
     @Operation(summary = "Remove um plano de saúde",
